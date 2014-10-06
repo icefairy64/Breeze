@@ -11,6 +11,7 @@ namespace Breeze
 	
 	public delegate int EventHandler(SDL.SDL_Event ev);
 	public delegate void DrawHandler(IntPtr renderer);
+	public delegate void CoreEventHandler();
 	
 	public static class BreezeCore
 	{
@@ -20,11 +21,16 @@ namespace Breeze
 		public static int ScrH { get; private set; }
 		public static EventHandler OnEvent;
 		public static DrawHandler OnDraw;
+		public static CoreEventHandler OnInit;
+		public static CoreEventHandler OnMainLoopStart;
+		public static CoreEventHandler OnMainLoop;
+		public static CoreEventHandler OnMainLoopFinish;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
 		public static uint TargetFPS;
 		static SDL.SDL_Rect ScrRect;
 		static uint DrawTimerInterval;
 		static bool Exit = false;
+		static int AnimateTimer;
 		
 		public static void Init(string title, int scrw, int scrh)
 		{
@@ -39,12 +45,19 @@ namespace Breeze
 			SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
 			SDL.SDL_Delay(500);
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
-			SDL.SDL_AddEventWatch(WatchEvents, IntPtr.Zero);
+			//SDL.SDL_AddEventWatch(WatchEvents, IntPtr.Zero);
+			
+			Resources.ResourceManager.Init();
+			
+			if (OnInit != null)
+				OnInit();
 		}
 		
 		public static void Start()
 		{
-			SDL.SDL_AddTimer(5, AnimateCallback, IntPtr.Zero);
+			if (OnMainLoopStart != null)
+				OnMainLoopStart();
+			AnimateTimer = SDL.SDL_AddTimer(5, AnimateCallback, IntPtr.Zero);
 			SDL.SDL_SetRenderDrawBlendMode(Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 			
 			SDL.SDL_Event ev;
@@ -52,9 +65,15 @@ namespace Breeze
 			{
 				while (SDL.SDL_PollEvent(out ev) == 1)
 					Exit = ProcessEvents(ev);
+				if (OnMainLoop != null)
+					OnMainLoop();
 				SDL.SDL_Delay(DrawTimerInterval);
 				Render();
 			}
+			
+			SDL.SDL_RemoveTimer(AnimateTimer);
+			if (OnMainLoopFinish != null)
+				OnMainLoopFinish();
 		}
 		
 		static uint AnimateCallback(uint interval, IntPtr param)
@@ -82,14 +101,15 @@ namespace Breeze
 		
 		static void Render()
 		{
-			SDL.SDL_RenderFillRect(Renderer, ref ScrRect);
-			//SDL.SDL_RenderClear(Renderer);
+			//SDL.SDL_RenderFillRect(Renderer, ref ScrRect);
+			SDL.SDL_RenderClear(Renderer);
 			OnDraw(Renderer);
 			SDL.SDL_RenderPresent(Renderer);
 		}
 		
 		public static void Finish()
 		{
+			Resources.ResourceManager.Free();		
 			SDL_image.IMG_Quit();
 			SDL.SDL_Quit();
 		}

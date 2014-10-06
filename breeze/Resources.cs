@@ -13,6 +13,8 @@ namespace Breeze.Resources
 		{
 			Name = name;
 		}
+		
+		public abstract void Free();
 	}
 	
 	public class Sprite : Resource
@@ -89,6 +91,12 @@ namespace Breeze.Resources
 				if (FrameCount < 2)
 					FrameCount = 1;
 			}
+		}
+		
+		public override void Free()
+		{
+			Console.WriteLine("Destroying texture: {0:x16}", Texture.ToInt64());
+			SDL.SDL_DestroyTexture(Texture);
 		}
 	}
 }

@@ -44,7 +44,8 @@ namespace Breeze
 			BreezeCore.OnDraw = Draw;
 			BreezeCore.Init("Breeze", 640, 480);
 			
-			spr = new Sprite("cirno.bspr");
+			Resources.ResourceManager.LoadSprite("cirno.bspr");
+			spr = new Sprite("cirno");
 			spr.Scale = 3;
 			spr.X = 320 - spr.W / 2;
 			spr.Y = 120;

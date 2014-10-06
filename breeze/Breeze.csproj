@@ -44,6 +44,7 @@
     <Compile Include="Drawable.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="ResourceManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

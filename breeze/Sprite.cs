@@ -65,20 +65,20 @@ namespace Breeze
 			Animated = false;
 		}
 		
-		public Sprite(string filename) : this()
+		public Sprite(string name) : this()
 		{
-			Images.Add(new Resources.Sprite(filename));
+			Images.Add(Resources.ResourceManager.FindSprite(name));
 			Animated = Animated || Images[0].Animated;
 			Start();
 		}
 		
-		public Sprite(List<string> filenames) : this()
+		public Sprite(List<string> names) : this()
 		{
-			if (filenames.Count == 0)
+			if (names.Count == 0)
 				return;
-			foreach (string fn in filenames)
+			foreach (string fn in names)
 			{
-				Images.Add(new Resources.Sprite(fn));
+				Images.Add(Resources.ResourceManager.FindSprite(fn));
 				Animated = Animated || Images[Images.Count - 1].Animated;
 			}
 			Start();
