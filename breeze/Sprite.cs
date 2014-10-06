@@ -7,13 +7,13 @@ namespace Breeze
 {
 	public class Sprite : Drawable
 	{
-		protected List<Resources.Sprite> Images;
+		public List<Resources.Sprite> Images;
 		public double AnimSpeed;
 		public bool Animated;
-		SDL.SDL_Rect FrameRect;
 		protected double Time;
-		protected int CurrentFrame;
+		protected int FCurrentFrame;
 		protected int FCurrentImage;
+		protected SDL.SDL_Rect SrcRect;
 		
 		public int CurrentImage
 		{
@@ -24,8 +24,25 @@ namespace Breeze
 			set
 			{
 				Time = 0;
-				CurrentFrame = 0;
 				FCurrentImage = value;
+				CurrentFrame = 0;
+			}
+		}
+		
+		public int CurrentFrame
+		{
+			get
+			{
+				return FCurrentFrame;
+			}
+			set
+			{
+				FCurrentFrame = value;
+				SrcRect = new SDL.SDL_Rect();
+				SrcRect.x = (int)(W * (FCurrentFrame % Images[CurrentImage].Cols));
+				SrcRect.y = (int)(H * (FCurrentFrame / Images[CurrentImage].Cols));
+				SrcRect.w = W;
+				SrcRect.h = H;
 			}
 		}
 		
@@ -33,6 +50,9 @@ namespace Breeze
 		{
 			W = Images[0].W;
 			H = Images[0].H;
+			CalculateRotationCenter(0.5, 0.5);
+			CurrentImage = 0;
+			
 			if (Animated)
 				BreezeCore.OnAnimate += Animate;
 		}
@@ -40,8 +60,7 @@ namespace Breeze
 		public Sprite() : base()
 		{
 			Images = new List<Resources.Sprite>();
-			Time = 0;
-			CurrentFrame = 0;
+			FCurrentImage = 0;
 			AnimSpeed = 1;
 			Animated = false;
 		}
@@ -70,15 +89,29 @@ namespace Breeze
 			SDL.SDL_Rect drect = new SDL.SDL_Rect();
 			drect.x = x;
 			drect.y = y;
-			drect.w = W;
-			drect.h = H;
+			drect.w = (int)(W * Scale);
+			drect.h = (int)(H * Scale);
 			
-			SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Images[FCurrentImage].Texture, ref FrameRect, ref drect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+			SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Images[FCurrentImage].Texture, ref SrcRect, ref drect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
 		}
 		
 		protected void Animate(object sender, TimerEventArgs e)
 		{
 			Time += e.Interval;
+			
+			if (Time >= Images[FCurrentImage].FrameIntervals[FCurrentFrame])
+			{
+				// Preparing for frame switch
+				FCurrentFrame++;
+				
+				if (FCurrentFrame == Images[FCurrentImage].FrameCount)
+				{
+					Time -= Images[FCurrentImage].FrameIntervals[FCurrentFrame - 1];
+					CurrentFrame = 0;
+				}
+				else  // Performing frame switch
+					CurrentFrame = FCurrentFrame;
+			}
 		}
 	}
 }

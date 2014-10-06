@@ -5,8 +5,7 @@ namespace Breeze
 {
 	class TestClass
 	{		
-		static int x1 = 640;
-		static int x2 = 0;
+		static Sprite spr;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -24,7 +23,8 @@ namespace Breeze
 		static void Draw(IntPtr renderer)
 		{
 			SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 128);
-			SDL.SDL_RenderDrawLine(renderer, x2, 0, x1, 480);
+			SDL.SDL_RenderDrawLine(renderer, 0, 0, 640, 480);
+			spr.Draw();
 			SDL.SDL_SetRenderDrawColor(renderer, 64, 96, 216, 255);
 		}
 		
@@ -32,16 +32,9 @@ namespace Breeze
 		{
 			SDL.SDL_Event ev = new SDL.SDL_Event();
 			ev.type = SDL.SDL_EventType.SDL_USEREVENT;
-			//SDL.SDL_PushEvent(ref ev);
+			SDL.SDL_PushEvent(ref ev);
 			
-			x1 += 10;
-			if (x1 > BreezeCore.ScrW)
-			{
-				x1 = 0;
-				x2 += 10;
-			}
-			if (x2 > BreezeCore.ScrW)
-				x2 = 0;
+			spr.Angle += 0.3;
 			
 			return 1;
 		}		
@@ -50,7 +43,14 @@ namespace Breeze
 			BreezeCore.OnEvent = ProcessEvents;
 			BreezeCore.OnDraw = Draw;
 			BreezeCore.Init("Breeze", 640, 480);
+			
+			spr = new Sprite("cirno.bspr");
+			spr.Scale = 3;
+			spr.X = 320 - spr.W / 2;
+			spr.Y = 120;
+			
 			//SDL.SDL_AddTimer(20, Timer, IntPtr.Zero);
+			
 			BreezeCore.Start();
 			BreezeCore.Finish();
 		}

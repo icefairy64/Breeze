@@ -12,13 +12,24 @@ namespace Breeze
 		public int H { get; protected set; }
 		public double Angle;
 		public byte Alpha;
-		public double Scale;
-		public SDL.SDL_Point RotationCenter;
+		public double FScale;
+		public double RotationCenterX;
+		public double RotationCenterY;
+		protected SDL.SDL_Point RotationCenter;
 		List<Drawable> Children;
+		
+		public double Scale
+		{
+			get { return FScale; }
+			set { FScale = value; CalculateRotationCenter(); }
+		}
 		
 		public Drawable()
 		{
 			Children = new List<Drawable>();
+			RotationCenter = new SDL.SDL_Point();
+			FScale = 1;
+			Alpha = 0xff;
 		}
 		
 		public Drawable(int w, int h) : this()
@@ -59,6 +70,19 @@ namespace Breeze
 		public void RemoveChild(Drawable dr)
 		{
 			Children.Remove(dr);
+		}
+		
+		protected void CalculateRotationCenter()
+		{
+			RotationCenter.x = (int)(W * RotationCenterX * FScale);
+			RotationCenter.y = (int)(H * RotationCenterX * FScale);
+		}
+		
+		protected void CalculateRotationCenter(double x, double y)
+		{
+			RotationCenterX = x;
+			RotationCenterY = y;
+			CalculateRotationCenter();
 		}
 	}
 }

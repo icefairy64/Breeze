@@ -22,6 +22,7 @@ namespace Breeze
 		public static DrawHandler OnDraw;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
 		public static uint TargetFPS;
+		static SDL.SDL_Rect ScrRect;
 		static uint DrawTimerInterval;
 		static bool Exit = false;
 		
@@ -29,6 +30,7 @@ namespace Breeze
 		{
 			ScrW = scrw;
 			ScrH = scrh;
+			ScrRect = new SDL.SDL_Rect() { x = 0, y = 0, w = ScrW, h = ScrH };
 			TargetFPS = 60;
 			DrawTimerInterval = 1000 / TargetFPS;
 			
@@ -43,6 +45,7 @@ namespace Breeze
 		public static void Start()
 		{
 			SDL.SDL_AddTimer(5, AnimateCallback, IntPtr.Zero);
+			SDL.SDL_SetRenderDrawBlendMode(Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 			
 			SDL.SDL_Event ev;
 			while (!Exit)
@@ -79,7 +82,8 @@ namespace Breeze
 		
 		static void Render()
 		{
-			SDL.SDL_RenderClear(Renderer);
+			SDL.SDL_RenderFillRect(Renderer, ref ScrRect);
+			//SDL.SDL_RenderClear(Renderer);
 			OnDraw(Renderer);
 			SDL.SDL_RenderPresent(Renderer);
 		}
