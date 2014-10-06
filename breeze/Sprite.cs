@@ -1,51 +1,68 @@
 using System;
 using System.Xml;
+using System.Collections.Generic;
 using SDL2;
 
 namespace Breeze
 {
 	public class Sprite : Drawable
 	{
-		IntPtr Texture;
-		int[] FrameIntervals;
-		uint CurrentFrame;
-		uint FrameCount;
-		uint Cols;
-		uint Rows;
+		protected List<Resources.Sprite> Images;
 		public double AnimSpeed;
 		public bool Animated;
 		SDL.SDL_Rect FrameRect;
+		protected double Time;
+		protected int CurrentFrame;
+		protected int FCurrentImage;
 		
-		public Sprite(string filename, IntPtr renderer) : base()
+		public int CurrentImage
 		{
+			get
+			{
+				return FCurrentImage;
+			}
+			set
+			{
+				Time = 0;
+				CurrentFrame = 0;
+				FCurrentImage = value;
+			}
+		}
+		
+		public void Start()
+		{
+			W = Images[0].W;
+			H = Images[0].H;
+			if (Animated)
+				BreezeCore.OnAnimate += Animate;
+		}
+		
+		public Sprite() : base()
+		{
+			Images = new List<Resources.Sprite>();
+			Time = 0;
+			CurrentFrame = 0;
 			AnimSpeed = 1;
-			if (!filename.EndsWith("bspr"))
-			{
-				// Loading plain 1-frame sprite
-				Texture = SDL_image.IMG_LoadTexture(renderer, filename);
-				FrameCount = 1;
-				Animated = false;
+			Animated = false;
+		}
+		
+		public Sprite(string filename) : this()
+		{
+			Images.Add(new Resources.Sprite(filename));
+			Animated = Animated || Images[0].Animated;
+			Start();
+		}
+		
+		public Sprite(List<string> filenames) : this()
+		{
+			if (filenames.Count == 0)
 				return;
-			}
-			
-			// Loading from BSPR file (XML)
-			// TODO: add BSPR format info
-			XmlDocument xml = new XmlDocument();
-			xml.Load(filename);
-			
-			XmlElement root = xml.DocumentElement;
-			
-			foreach (XmlNode ch in root.ChildNodes)
+			foreach (string fn in filenames)
 			{
-				XmlElement el = (XmlElement)ch;
-				switch (el.Name.ToLower())
-				{
-					case "image":
-						if (el.HasAttribute("cols"))
-							Cols = uint.Parse(el.GetAttribute("cols"));
-						break;
-				}
+				Images.Add(new Resources.Sprite(fn));
+				Animated = Animated || Images[Images.Count - 1].Animated;
 			}
+			Start();
 		}
 		
 		protected override void InternalDraw(int x, int y, double angle)
@@ -56,7 +73,12 @@ namespace Breeze
 			drect.w = W;
 			drect.h = H;
 			
-			SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Texture, ref FrameRect, ref drect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+			SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Images[FCurrentImage].Texture, ref FrameRect, ref drect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+		}
+		
+		protected void Animate(object sender, TimerEventArgs e)
+		{
+			Time += e.Interval;
 		}
 	}
 }

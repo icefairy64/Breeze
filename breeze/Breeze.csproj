@@ -43,6 +43,7 @@
     <Compile Include="BreezeCore.cs" />
     <Compile Include="Drawable.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="Resources.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
