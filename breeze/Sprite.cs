@@ -25,6 +25,7 @@ namespace Breeze.Graphics
 			{
 				Time = 0;
 				FCurrentImage = value;
+				SetAlpha(FAlpha);
 				CurrentFrame = 0;
 			}
 		}
@@ -39,8 +40,8 @@ namespace Breeze.Graphics
 			{
 				FCurrentFrame = value;
 				SrcRect = new SDL.SDL_Rect();
-				SrcRect.x = (int)(W * (FCurrentFrame % Images[CurrentImage].Cols));
-				SrcRect.y = (int)(H * (FCurrentFrame / Images[CurrentImage].Cols));
+				SrcRect.x = (int)(W * (FCurrentFrame % Images[FCurrentImage].Cols));
+				SrcRect.y = (int)(H * (FCurrentFrame / Images[FCurrentImage].Cols));
 				SrcRect.w = W;
 				SrcRect.h = H;
 			}
@@ -55,6 +56,11 @@ namespace Breeze.Graphics
 			
 			if (Animated)
 				BreezeCore.OnAnimate += Animate;
+		}
+		
+		protected override void SetAlpha(byte alpha)
+		{
+			SDL.SDL_SetTextureAlphaMod(Images[FCurrentImage].Texture, alpha);
 		}
 		
 		public Sprite(int zorder = 0) : base(zorder)
@@ -97,7 +103,7 @@ namespace Breeze.Graphics
 		
 		protected void Animate(object sender, TimerEventArgs e)
 		{
-			Time += e.Interval;
+			Time += e.Interval * AnimSpeed;
 			
 			if (Time >= Images[FCurrentImage].FrameIntervals[FCurrentFrame])
 			{

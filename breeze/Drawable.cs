@@ -11,7 +11,12 @@ namespace Breeze.Graphics
 		public int W { get; protected set; }
 		public int H { get; protected set; }
 		public double Angle;
-		public byte Alpha;
+		protected byte FAlpha;
+		public byte Alpha
+		{
+			get	{ return FAlpha; }
+			set { FAlpha = value; SetAlpha(value); }
+		}
 		public double FScale;
 		public double RotationCenterX;
 		public double RotationCenterY;
@@ -30,7 +35,7 @@ namespace Breeze.Graphics
 			Children = new List<Drawable>();
 			RotationCenter = new SDL.SDL_Point();
 			FScale = 1;
-			Alpha = 0xff;
+			FAlpha = 0xff;
 			ZOrder = zorder;
 		}
 		
@@ -45,6 +50,8 @@ namespace Breeze.Graphics
 			X = x;
 			Y = y;
 		}
+		
+		protected abstract void SetAlpha(byte alpha);
 		
 		protected abstract void InternalDraw(int x, int y, double angle);
 		

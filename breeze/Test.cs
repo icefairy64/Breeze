@@ -1,4 +1,6 @@
 using System;
+using Breeze.Graphics;
+using Breeze.Resources;
 using SDL2;
 
 namespace Breeze
@@ -6,6 +8,7 @@ namespace Breeze
 	class TestClass
 	{		
 		static Graphics.Sprite spr;
+		static Graphics.Layer layer;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -24,7 +27,7 @@ namespace Breeze
 		{
 			SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 128);
 			SDL.SDL_RenderDrawLine(renderer, 0, 0, 640, 480);
-			spr.Draw();
+			layer.Draw();
 			SDL.SDL_SetRenderDrawColor(renderer, 64, 96, 216, 255);
 		}
 		
@@ -37,21 +40,35 @@ namespace Breeze
 			spr.Angle += 0.3;
 			
 			return 1;
-		}		
+		}	
+		
+		static void OnInit()
+		{
+			layer = new Graphics.Layer("front");
+			layer.Alpha = 0xff;
+			
+			Resources.Manager.LoadSprite("cirno.bspr");
+			
+			for (int i = 0; i < 9; i++)
+			{
+				spr = new Graphics.Sprite("cirno", 9 - i);
+				spr.Scale = 3;
+				spr.X = 120 + i * 32;
+				spr.Y = 120 - i * 4;
+				spr.AnimSpeed = 1 + (i / 10.0);
+				layer.Insert(spr);
+			}
+			
+			//SDL.SDL_AddTimer(20, Timer, IntPtr.Zero);
+		}
+		
 		public static void Main(string[] args)
 		{
 			BreezeCore.OnEvent = ProcessEvents;
 			BreezeCore.OnDraw = Draw;
+			BreezeCore.OnInit = OnInit;
+			
 			BreezeCore.Init("Breeze", 640, 480);
-			
-			Resources.Manager.LoadSprite("cirno.bspr");
-			spr = new Graphics.Sprite("cirno");
-			spr.Scale = 3;
-			spr.X = 320 - spr.W / 2;
-			spr.Y = 120;
-			
-			//SDL.SDL_AddTimer(20, Timer, IntPtr.Zero);
-			
 			BreezeCore.Start();
 			BreezeCore.Finish();
 		}

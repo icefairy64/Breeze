@@ -95,8 +95,16 @@ namespace Breeze.Resources
 		
 		public override void Free()
 		{
+			if (Texture == IntPtr.Zero)
+				return;
 			Console.WriteLine("Destroying texture: {0:x16}", Texture.ToInt64());
 			SDL.SDL_DestroyTexture(Texture);
+			Texture = IntPtr.Zero;
+		}
+		
+		~Sprite()
+		{
+			Free();
 		}
 	}
 }
