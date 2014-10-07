@@ -5,7 +5,7 @@ namespace Breeze
 {
 	class TestClass
 	{		
-		static Sprite spr;
+		static Graphics.Sprite spr;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -44,8 +44,8 @@ namespace Breeze
 			BreezeCore.OnDraw = Draw;
 			BreezeCore.Init("Breeze", 640, 480);
 			
-			Resources.ResourceManager.LoadSprite("cirno.bspr");
-			spr = new Sprite("cirno");
+			Resources.Manager.LoadSprite("cirno.bspr");
+			spr = new Graphics.Sprite("cirno");
 			spr.Scale = 3;
 			spr.X = 320 - spr.W / 2;
 			spr.Y = 120;

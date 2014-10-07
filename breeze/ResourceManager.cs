@@ -4,9 +4,11 @@ using SDL2;
 
 namespace Breeze.Resources
 {
-	public static class ResourceManager
+	public static class Manager
 	{
-		public static Dictionary<string, Resource> Resources;
+		static readonly string SpritePref = "sprite.";
+		
+		static Dictionary<string, Resource> Resources;
 		
 		public static void Init()
 		{
@@ -18,11 +20,10 @@ namespace Breeze.Resources
 			UnloadAll();
 		}
 		
-		public static Sprite LoadSprite(string filename)
+		public static void LoadSprite(string filename)
 		{
 			Sprite spr = new Sprite(filename);
-			Resources.Add(spr.Name, spr);
-			return spr;
+			Resources.Add(SpritePref + spr.Name, spr);
 		}
 		
 		public static void Unload(string name)
@@ -33,13 +34,8 @@ namespace Breeze.Resources
 		
 		public static void UnloadAll()
 		{
-			if (Resources.Count == 0)
-				return;
-			
 			foreach (Resource res in Resources.Values)
-			{
 				res.Free();
-			}
 		}
 		
 		public static Resource Find(string name)
@@ -49,7 +45,7 @@ namespace Breeze.Resources
 		
 		public static Sprite FindSprite(string name)
 		{
-			return (Sprite)Resources[name];
+			return (Sprite)Resources[SpritePref + name];
 		}
 	}
 }

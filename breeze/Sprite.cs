@@ -3,7 +3,7 @@ using System.Xml;
 using System.Collections.Generic;
 using SDL2;
 
-namespace Breeze
+namespace Breeze.Graphics
 {
 	public class Sprite : Drawable
 	{
@@ -57,7 +57,7 @@ namespace Breeze
 				BreezeCore.OnAnimate += Animate;
 		}
 		
-		public Sprite() : base()
+		public Sprite(int zorder = 0) : base(zorder)
 		{
 			Images = new List<Resources.Sprite>();
 			FCurrentImage = 0;
@@ -65,20 +65,20 @@ namespace Breeze
 			Animated = false;
 		}
 		
-		public Sprite(string name) : this()
+		public Sprite(string name, int zorder = 0) : this(zorder)
 		{
-			Images.Add(Resources.ResourceManager.FindSprite(name));
+			Images.Add(Resources.Manager.FindSprite(name));
 			Animated = Animated || Images[0].Animated;
 			Start();
 		}
 		
-		public Sprite(List<string> names) : this()
+		public Sprite(List<string> names, int zorder = 0) : this(zorder)
 		{
 			if (names.Count == 0)
 				return;
 			foreach (string fn in names)
 			{
-				Images.Add(Resources.ResourceManager.FindSprite(fn));
+				Images.Add(Resources.Manager.FindSprite(fn));
 				Animated = Animated || Images[Images.Count - 1].Animated;
 			}
 			Start();

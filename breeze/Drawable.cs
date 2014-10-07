@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SDL2;
 
-namespace Breeze
+namespace Breeze.Graphics
 {
 	public abstract class Drawable
 	{
@@ -15,8 +15,9 @@ namespace Breeze
 		public double FScale;
 		public double RotationCenterX;
 		public double RotationCenterY;
+		public int ZOrder { get; protected set; }
 		protected SDL.SDL_Point RotationCenter;
-		List<Drawable> Children;
+		protected List<Drawable> Children;
 		
 		public double Scale
 		{
@@ -24,21 +25,22 @@ namespace Breeze
 			set { FScale = value; CalculateRotationCenter(); }
 		}
 		
-		public Drawable()
+		public Drawable(int zorder = 0)
 		{
 			Children = new List<Drawable>();
 			RotationCenter = new SDL.SDL_Point();
 			FScale = 1;
 			Alpha = 0xff;
+			ZOrder = zorder;
 		}
 		
-		public Drawable(int w, int h) : this()
+		public Drawable(int w, int h, int zorder = 0) : this(zorder)
 		{
 			W = w;
 			H = h;
 		}
 		
-		public Drawable(int x, int y, int w, int h) : this(w, h)
+		public Drawable(int x, int y, int w, int h, int zorder = 0) : this(w, h, zorder)
 		{
 			X = x;
 			Y = y;
@@ -46,7 +48,7 @@ namespace Breeze
 		
 		protected abstract void InternalDraw(int x, int y, double angle);
 		
-		public void Draw(int dx, int dy, double dangle)
+		public virtual void Draw(int dx, int dy, double dangle)
 		{
 			int rx = X + dx;
 			int ry = Y + dy;

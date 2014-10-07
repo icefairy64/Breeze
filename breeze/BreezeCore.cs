@@ -47,7 +47,7 @@ namespace Breeze
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
 			//SDL.SDL_AddEventWatch(WatchEvents, IntPtr.Zero);
 			
-			Resources.ResourceManager.Init();
+			Resources.Manager.Init();
 			
 			if (OnInit != null)
 				OnInit();
@@ -109,7 +109,7 @@ namespace Breeze
 		
 		public static void Finish()
 		{
-			Resources.ResourceManager.Free();		
+			Resources.Manager.Free();		
 			SDL_image.IMG_Quit();
 			SDL.SDL_Quit();
 		}
