@@ -119,6 +119,12 @@ namespace Breeze.Graphics
 					CurrentFrame = FCurrentFrame;
 			}
 		}
+
+        ~Sprite()
+        {
+            if (Animated)
+                BreezeCore.OnAnimate -= Animate;
+        }
 	}
 }
 

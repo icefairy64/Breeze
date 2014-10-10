@@ -27,7 +27,7 @@ namespace Breeze
 		public static CoreEventHandler OnMainLoopFinish;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
 		public static uint TargetFPS;
-		static SDL.SDL_Rect ScrRect;
+		public static SDL.SDL_Rect ScrRect;
 		static uint DrawTimerInterval;
 		static bool Exit = false;
 		static int AnimateTimer;
@@ -45,6 +45,7 @@ namespace Breeze
 			SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
 			SDL.SDL_Delay(500);
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
+            SDL_ttf.TTF_Init();
 			//SDL.SDL_AddEventWatch(WatchEvents, IntPtr.Zero);
 			
 			Resources.Manager.Init();
@@ -110,7 +111,8 @@ namespace Breeze
 		public static void Finish()
 		{
 			Resources.Manager.Free();		
-			SDL_image.IMG_Quit();
+            SDL_ttf.TTF_Quit();
+            SDL_image.IMG_Quit();
 			SDL.SDL_Quit();
 		}
 	}

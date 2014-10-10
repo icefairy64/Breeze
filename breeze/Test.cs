@@ -9,6 +9,7 @@ namespace Breeze
 	{		
 		static Graphics.Sprite spr;
 		static Graphics.Layer layer;
+        static IntPtr font;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -25,8 +26,8 @@ namespace Breeze
 		
 		static void Draw(IntPtr renderer)
 		{
-			SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 128);
-			SDL.SDL_RenderDrawLine(renderer, 0, 0, 640, 480);
+            SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 128);
+			SDL.SDL_RenderDrawLine(renderer, 0, 0, BreezeCore.ScrW, BreezeCore.ScrH);
 			layer.Draw();
 			SDL.SDL_SetRenderDrawColor(renderer, 64, 96, 216, 255);
 		}
@@ -47,17 +48,21 @@ namespace Breeze
 			layer = new Graphics.Layer("front");
 			layer.Alpha = 0xff;
 			
-			Resources.Manager.LoadSprite("cirno.bspr");
-			
-			for (int i = 0; i < 9; i++)
-			{
-				spr = new Graphics.Sprite("cirno", 9 - i);
-				spr.Scale = 3;
-				spr.X = 120 + i * 32;
-				spr.Y = 120 - i * 4;
-				spr.AnimSpeed = 1 + (i / 10.0);
-				layer.Insert(spr);
-			}
+			Resources.Manager.LoadSprite("lkun.bspr");
+            Resources.Manager.LoadFont("hammersmithone.ttf", 24);
+
+			spr = new Graphics.Sprite("lkun");
+			spr.Scale = 3;
+			spr.X = 320 - spr.W * 3 / 2;
+			spr.Y = 120;
+			spr.AnimSpeed = 1;
+			layer.Insert(spr);
+
+            Graphics.Text txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone"));
+            txt.Value = "L-Kun uses BREEZE v0.1!";
+            txt.X = 100;
+            txt.Y = 60;
+            layer.Insert(txt);
 			
 			//SDL.SDL_AddTimer(20, Timer, IntPtr.Zero);
 		}

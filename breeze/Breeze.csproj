@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9F6F8583-BFAA-4653-BC25-311F28387C97}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -46,6 +46,7 @@
     <Compile Include="Resources.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Layer.cs" />
+    <Compile Include="Text.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

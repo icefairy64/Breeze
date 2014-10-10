@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using System.IO;
 using System.Collections.Generic;
 using SDL2;
 
@@ -11,7 +12,7 @@ namespace Breeze.Resources
 		
 		public Resource(string name)
 		{
-			Name = name;
+			Name = Path.GetFileNameWithoutExtension(name);
 		}
 		
 		public abstract void Free();
@@ -107,5 +108,25 @@ namespace Breeze.Resources
 			Free();
 		}
 	}
+
+    public class Font : Resource
+    {
+        public IntPtr Handle { get; protected set; }
+
+        public Font(string filename, int pt) : base(filename)
+        {
+            Handle = SDL_ttf.TTF_OpenFont(filename, pt);
+        }
+
+        public override void Free()
+        {
+            SDL_ttf.TTF_CloseFont(Handle);
+        }
+
+        ~Font()
+        {
+            Free();
+        }
+    }
 }
 

@@ -7,6 +7,7 @@ namespace Breeze.Resources
 	public static class Manager
 	{
 		static readonly string SpritePref = "sprite.";
+        static readonly string FontPref = "font.";
 		
 		static Dictionary<string, Resource> Resources;
 		
@@ -25,6 +26,12 @@ namespace Breeze.Resources
 			Sprite spr = new Sprite(filename);
 			Resources.Add(SpritePref + spr.Name, spr);
 		}
+
+        public static void LoadFont(string filename, int pt)
+        {
+            Font fnt = new Font(filename, pt);
+            Resources.Add(FontPref + fnt.Name, fnt);
+        }
 		
 		public static void Unload(string name)
 		{
@@ -47,6 +54,11 @@ namespace Breeze.Resources
 		{
 			return (Sprite)Resources[SpritePref + name];
 		}
+
+        public static Font FindFont(string name)
+        {
+            return (Font)Resources[FontPref + name];
+        }
 	}
 }
 

@@ -34,7 +34,7 @@ namespace Breeze.Graphics
 		{
 			Children = new List<Drawable>();
 			RotationCenter = new SDL.SDL_Point();
-			FScale = 1;
+			Scale = 1;
 			FAlpha = 0xff;
 			ZOrder = zorder;
 		}

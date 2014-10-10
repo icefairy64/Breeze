@@ -30,7 +30,8 @@ namespace Breeze.Graphics
 		
 		protected override void InternalDraw(int x, int y, double angle)
 		{
-			// Do nothing
+            SDL.SDL_SetRenderTarget(BreezeCore.Renderer, IntPtr.Zero);
+            SDL.SDL_RenderCopy(BreezeCore.Renderer, Buffer, ref SrcRect, ref SrcRect);
 		}
 		
 		public override void Draw(int dx, int dy, double dangle)
@@ -40,9 +41,6 @@ namespace Breeze.Graphics
 			SDL.SDL_RenderClear(BreezeCore.Renderer);
 			
 			base.Draw(dx, dy, dangle);
-			SDL.SDL_SetRenderTarget(BreezeCore.Renderer, IntPtr.Zero);
-			
-			SDL.SDL_RenderCopy(BreezeCore.Renderer, Buffer, ref SrcRect, ref SrcRect);
 		}
 		
 		public void Insert(Drawable dr)
