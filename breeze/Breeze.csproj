@@ -47,6 +47,7 @@
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="Text.cs" />
+    <Compile Include="Screen.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

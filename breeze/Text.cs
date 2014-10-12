@@ -34,13 +34,7 @@ namespace Breeze.Graphics
 
         protected override void InternalDraw(int x, int y, double angle)
         {
-            SDL.SDL_Rect drect = new SDL.SDL_Rect();
-            drect.x = x;
-            drect.y = y;
-            drect.w = (int)(W * Scale);
-            drect.h = (int)(H * Scale);
-
-            SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Texture, ref SrcRect, ref drect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+            SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Texture, ref SrcRect, ref DstRect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
         }
 
         public Text(Resources.Font font, int zorder = 0) : base(zorder)

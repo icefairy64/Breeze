@@ -6,10 +6,42 @@ namespace Breeze.Graphics
 {
 	public abstract class Drawable
 	{
-		public int X;
-		public int Y;
-		public int W { get; protected set; }
-		public int H { get; protected set; }
+		protected int FX, FY, FW, FH;
+        
+        // Dimension properties
+        public int X
+        {
+            get { return FX; }
+            set {
+                FX = value;
+                CalculateDestRect();
+            }
+        }
+        public int Y
+        {
+            get { return FY; }
+            set {
+                FY = value;
+                CalculateDestRect();
+            }
+        }
+        public int W
+        {
+            get { return FW; }
+            protected set {
+                FW = value;
+                CalculateDestRect();
+            }
+        }
+        public int H
+        {
+            get { return FH; }
+            protected set {
+                FH = value;
+                CalculateDestRect();
+            }
+        }
+
 		public double Angle;
 		protected byte FAlpha;
 		public byte Alpha
@@ -23,16 +55,26 @@ namespace Breeze.Graphics
 		public int ZOrder { get; protected set; }
 		protected SDL.SDL_Point RotationCenter;
 		protected List<Drawable> Children;
+        protected SDL.SDL_Rect DstRect;
 		
 		public double Scale
 		{
 			get { return FScale; }
 			set { FScale = value; CalculateRotationCenter(); }
 		}
-		
+
+        void CalculateDestRect()
+        {
+            DstRect.x = FX;
+            DstRect.y = FY;
+            DstRect.w = (int)(FW * Scale);
+            DstRect.h = (int)(FH * Scale);
+        }
+
 		public Drawable(int zorder = 0)
 		{
 			Children = new List<Drawable>();
+            DstRect = new SDL.SDL_Rect();
 			RotationCenter = new SDL.SDL_Point();
 			Scale = 1;
 			FAlpha = 0xff;

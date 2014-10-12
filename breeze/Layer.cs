@@ -10,7 +10,7 @@ namespace Breeze.Graphics
 		protected SDL.SDL_Rect SrcRect;
 		public string Name { get; protected set; }
 		
-		public Layer(string name)
+		public Layer(string name, int zorder = 0)
 		{
 			Buffer = SDL.SDL_CreateTexture(BreezeCore.Renderer, 
 			                               SDL.SDL_GetWindowPixelFormat(BreezeCore.Window), 
@@ -19,8 +19,9 @@ namespace Breeze.Graphics
 			                               BreezeCore.ScrH);
 			SDL.SDL_SetTextureBlendMode(Buffer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 			
-			SrcRect = new SDL.SDL_Rect() { x = 0, y = 0, w = BreezeCore.ScrW, h = BreezeCore.ScrH };
+			SrcRect = new SDL.SDL_Rect() { x = 0, y = 0, w = BreezeCore.ScrW, h = BreezeCore.ScrH };    // Use BreezeCore.ScrRect instead?
 			Name = name;
+            ZOrder = zorder;
 		}
 		
 		protected override void SetAlpha(byte alpha)
@@ -30,14 +31,13 @@ namespace Breeze.Graphics
 		
 		protected override void InternalDraw(int x, int y, double angle)
 		{
-            SDL.SDL_SetRenderTarget(BreezeCore.Renderer, IntPtr.Zero);
+            SDL.SDL_SetRenderTarget(BreezeCore.Renderer, Screen.Buffer);
             SDL.SDL_RenderCopy(BreezeCore.Renderer, Buffer, ref SrcRect, ref SrcRect);
 		}
 		
 		public override void Draw(int dx, int dy, double dangle)
 		{
 			SDL.SDL_SetRenderTarget(BreezeCore.Renderer, Buffer);
-			SDL.SDL_SetRenderDrawColor(BreezeCore.Renderer, 255, 255, 255, 0);	// Move it!
 			SDL.SDL_RenderClear(BreezeCore.Renderer);
 			
 			base.Draw(dx, dy, dangle);

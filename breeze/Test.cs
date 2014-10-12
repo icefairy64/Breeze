@@ -9,7 +9,6 @@ namespace Breeze
 	{		
 		static Graphics.Sprite spr;
 		static Graphics.Layer layer;
-        static IntPtr font;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -22,14 +21,6 @@ namespace Breeze
 				
 			}
 			return 0;
-		}
-		
-		static void Draw(IntPtr renderer)
-		{
-            SDL.SDL_SetRenderDrawColor(renderer, 255, 255, 255, 128);
-			SDL.SDL_RenderDrawLine(renderer, 0, 0, BreezeCore.ScrW, BreezeCore.ScrH);
-			layer.Draw();
-			SDL.SDL_SetRenderDrawColor(renderer, 64, 96, 216, 255);
 		}
 		
 		static uint Timer(uint interval, IntPtr param)
@@ -45,7 +36,7 @@ namespace Breeze
 		
 		static void OnInit()
 		{
-			layer = new Graphics.Layer("front");
+            layer = Graphics.Screen.CreateLayer("front");
 			layer.Alpha = 0xff;
 			
 			Resources.Manager.LoadSprite("lkun.bspr");
@@ -58,7 +49,7 @@ namespace Breeze
 			spr.AnimSpeed = 1;
 			layer.Insert(spr);
 
-            Graphics.Text txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone"));
+            Graphics.Text txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone24"));
             txt.Value = "L-Kun uses BREEZE v0.1!";
             txt.X = 100;
             txt.Y = 60;
@@ -70,7 +61,6 @@ namespace Breeze
 		public static void Main(string[] args)
 		{
 			BreezeCore.OnEvent = ProcessEvents;
-			BreezeCore.OnDraw = Draw;
 			BreezeCore.OnInit = OnInit;
 			
 			BreezeCore.Init("Breeze", 640, 480);

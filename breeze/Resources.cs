@@ -97,8 +97,8 @@ namespace Breeze.Resources
 		public override void Free()
 		{
 			if (Texture == IntPtr.Zero)
-				return;
-			Console.WriteLine("Destroying texture: {0:x16}", Texture.ToInt64());
+				return;  
+			Console.WriteLine("Freeing texture: {0:x16}", Texture.ToInt64());
 			SDL.SDL_DestroyTexture(Texture);
 			Texture = IntPtr.Zero;
 		}
@@ -116,11 +116,16 @@ namespace Breeze.Resources
         public Font(string filename, int pt) : base(filename)
         {
             Handle = SDL_ttf.TTF_OpenFont(filename, pt);
+            Name += pt.ToString();
         }
 
         public override void Free()
         {
+            if (Handle == IntPtr.Zero)
+                return; 
+            Console.WriteLine("Freeing font: {0:x16}", Handle.ToInt64());
             SDL_ttf.TTF_CloseFont(Handle);
+            Handle = IntPtr.Zero;
         }
 
         ~Font()

@@ -40,7 +40,8 @@ namespace Breeze
 			TargetFPS = 60;
 			DrawTimerInterval = 1000 / TargetFPS;
 			
-			SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_TIMER | SDL.SDL_INIT_GAMECONTROLLER | SDL.SDL_INIT_JOYSTICK);
+            // Initializing SDL subsystems
+            SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_TIMER | SDL.SDL_INIT_GAMECONTROLLER | SDL.SDL_INIT_JOYSTICK);
 			SDL.SDL_Delay(500);
 			SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
 			SDL.SDL_Delay(500);
@@ -49,6 +50,7 @@ namespace Breeze
 			//SDL.SDL_AddEventWatch(WatchEvents, IntPtr.Zero);
 			
 			Resources.Manager.Init();
+            Graphics.Screen.Init();
 			
 			if (OnInit != null)
 				OnInit();
@@ -104,7 +106,9 @@ namespace Breeze
 		{
 			//SDL.SDL_RenderFillRect(Renderer, ref ScrRect);
 			SDL.SDL_RenderClear(Renderer);
-			OnDraw(Renderer);
+            Graphics.Screen.Draw();
+            if (OnDraw != null)
+                OnDraw(Renderer);
 			SDL.SDL_RenderPresent(Renderer);
 		}
 		
