@@ -56,6 +56,11 @@ namespace Breeze.Graphics
 		{
 			SDL.SDL_SetTextureAlphaMod(Images[FCurrentImage].Texture, alpha);
 		}
+
+        protected override void SetBlendMode(SDL.SDL_BlendMode mode)
+        {
+            SDL.SDL_SetTextureBlendMode(Images[FCurrentImage].Texture, mode);
+        }
 		
 		public Sprite(int zorder = 0) : base(zorder)
 		{

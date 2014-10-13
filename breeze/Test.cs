@@ -12,6 +12,7 @@ namespace Breeze
         static Graphics.Text txt;
         static int frames = 0;
         static bool[] keystate = new bool[4];
+        static uint lastint = 0;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -40,6 +41,8 @@ namespace Breeze
                 Graphics.Screen.CamY += 1;
             if (keystate[3])
                 Graphics.Screen.CamX -= 1;
+            
+            lastint = interval;
 
 			return 1;
 		}	
@@ -47,31 +50,37 @@ namespace Breeze
         static void OnDraw(IntPtr renderer)
         {
             frames++;
-            txt.Value = String.Format("Frames: {0}", frames);
+            txt.Value = String.Format("Frame: {0}", frames);
+            Graphics.Screen.FindLayer("back").Alpha = (byte)(frames % 0xff);
         }
 		
 		static void OnInit()
 		{
-            layer = Graphics.Screen.CreateLayer("front");
-			layer.Alpha = 0xff;
-			
 			Resources.Manager.LoadSprite("lkun.bspr");
             Resources.Manager.LoadFont("hammersmithone.ttf", 24);
 
-			spr = new Graphics.Sprite("lkun");
+            layer = Graphics.Screen.CreateLayer("front", 1);
+            layer.Alpha = 0xa0;
+            layer.BlendMode = SDL.SDL_BlendMode.SDL_BLENDMODE_ADD;
+
+            spr = new Graphics.Sprite("lkun");
 			spr.Scale = 3;
-			spr.X = 320 - spr.W * 3 / 2;
-			spr.Y = 120;
+            spr.X = (int)(BreezeCore.ScrW / 2 - spr.W * spr.Scale / 2);
+            spr.Y = (int)(BreezeCore.ScrH / 2 - spr.H * spr.Scale / 2);
 			spr.AnimSpeed = 1;
 			layer.Insert(spr);
 
+            layer = Graphics.Screen.CreateLayer("back");
+            layer.ScrollSpeed = 0.7;
+            layer.Alpha = 0x10;
+
             txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone24"));
             txt.Value = "L-Kun uses BREEZE v0.1!";
-            txt.X = 100;
-            txt.Y = 60;
+            txt.X = BreezeCore.ScrW / 2 - txt.W / 2;
+            txt.Y = BreezeCore.ScrH / 2 - txt.H / 2;
             layer.Insert(txt);
 			
-			SDL.SDL_AddTimer(20, Timer, IntPtr.Zero);
+			SDL.SDL_AddTimer(1, Timer, IntPtr.Zero);
 		}
 
         static void OnKey(SDL.SDL_KeyboardEvent ev)
@@ -104,7 +113,7 @@ namespace Breeze
             BreezeCore.OnDraw = OnDraw;
             BreezeCore.OnKey = OnKey;
 			
-			BreezeCore.Init("Breeze", 640, 480);
+			BreezeCore.Init("Breeze", 800, 600);
 			BreezeCore.Start();
 			BreezeCore.Finish();
 		}

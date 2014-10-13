@@ -20,6 +20,8 @@ namespace Breeze.Graphics
                 int w, h, a;
                 uint f;
                 Texture = SDL.SDL_CreateTextureFromSurface(BreezeCore.Renderer, SDL_ttf.TTF_RenderText_Blended(Font.Handle, FValue, Color));
+                SDL.SDL_SetTextureBlendMode(Texture, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+                SDL.SDL_SetTextureAlphaMod(Texture, FAlpha);
                 SDL.SDL_QueryTexture(Texture, out f, out a, out w, out h);
                 W = w;
                 H = h;
@@ -29,7 +31,12 @@ namespace Breeze.Graphics
 
         protected override void SetAlpha(byte alpha)
         {
-            SDL.SDL_SetTextureAlphaMod(Texture, FAlpha);
+            SDL.SDL_SetTextureAlphaMod(Texture, alpha);
+        }
+
+        protected override void SetBlendMode(SDL.SDL_BlendMode mode)
+        {
+            SDL.SDL_SetTextureBlendMode(Texture, mode);
         }
 
         protected override void InternalDraw(int x, int y, double angle)

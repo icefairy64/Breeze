@@ -28,11 +28,32 @@ namespace Breeze
 		public static CoreEventHandler OnMainLoopFinish;
         public static KeyInputHandler OnKey;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
+        public static event EventHandler<TimerEventArgs> OnUpdate;
 		public static uint TargetFPS;
 		public static SDL.SDL_Rect ScrRect;
 		static uint DrawTimerInterval;
 		public static bool Exit = false;
 		static int AnimateTimer;
+        static int UpdateTimer;
+        static Game.GameState FCurrentState;
+
+        public static Game.GameState CurrentState
+        {
+            get { return FCurrentState; }
+            set
+            {
+                if (FCurrentState != null)
+                {
+                    OnUpdate -= FCurrentState.Update;
+                    FCurrentState.Leave();
+                }
+                FCurrentState = value;
+
+                FCurrentState.Enter();
+                OnKey = FCurrentState.KeyInput;
+                OnUpdate += FCurrentState.Update;
+            }
+        }
 		
 		public static void Init(string title, int scrw, int scrh)
 		{
@@ -45,7 +66,11 @@ namespace Breeze
             // Initializing SDL subsystems
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_TIMER | SDL.SDL_INIT_GAMECONTROLLER | SDL.SDL_INIT_JOYSTICK);
 			SDL.SDL_Delay(500);
-			SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
+            
+            // Hints
+            //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");
+			
+            SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
 			SDL.SDL_Delay(500);
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
             SDL_ttf.TTF_Init();
@@ -63,6 +88,7 @@ namespace Breeze
 			if (OnMainLoopStart != null)
 				OnMainLoopStart();
 			AnimateTimer = SDL.SDL_AddTimer(5, AnimateCallback, IntPtr.Zero);
+            UpdateTimer = SDL.SDL_AddTimer(5, UpdateCallback, IntPtr.Zero);
 			SDL.SDL_SetRenderDrawBlendMode(Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 			
 			SDL.SDL_Event ev;
@@ -77,6 +103,7 @@ namespace Breeze
 			}
 			
 			SDL.SDL_RemoveTimer(AnimateTimer);
+            SDL.SDL_RemoveTimer(UpdateTimer);
 			if (OnMainLoopFinish != null)
 				OnMainLoopFinish();
 		}
@@ -89,6 +116,15 @@ namespace Breeze
 				handler(null, arg);
 			return interval;
 		}
+
+        static uint UpdateCallback(uint interval, IntPtr param)
+        {
+            TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
+            EventHandler<TimerEventArgs> handler = OnUpdate;
+            if (handler != null)
+                handler(null, arg);
+            return interval;
+        }
 		
 		static bool ProcessEvents(SDL.SDL_Event ev)
 		{

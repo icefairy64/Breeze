@@ -59,6 +59,13 @@ namespace Breeze.Graphics
 		protected List<Drawable> Children;
         protected SDL.SDL_Rect DstRect;
         public string Layer;
+        public SDL.SDL_BlendMode BlendMode
+        {
+            set
+            {
+                SetBlendMode(value);
+            }
+        }
 		
 		public double Scale
 		{
@@ -99,6 +106,7 @@ namespace Breeze.Graphics
 		}
 		
 		protected abstract void SetAlpha(byte alpha);
+        protected abstract void SetBlendMode(SDL.SDL_BlendMode mode);
 		
 		protected abstract void InternalDraw(int x, int y, double angle);
 		

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using SDL2;
 
 namespace Breeze.Game
 {
-    public class GameState
+    public abstract class GameState
     {
-        Dictionary<string, Actor> Actors;
-        Dictionary<string, int> Counter;
-        public GameState Next;
+        protected Dictionary<string, Actor> Actors;
+        protected Dictionary<string, int> Counter;
+        public GameState Prev;
+        protected uint Time = 0;
 
         public GameState()
         {
@@ -29,6 +31,15 @@ namespace Breeze.Game
         {
             Actors.Remove(instance);
         }
+
+        public virtual void Update(object sender, TimerEventArgs e)
+        {
+            Time += e.Interval;
+        }
+
+        public abstract void Enter();
+        public abstract void Leave();
+        public abstract void KeyInput(SDL.SDL_KeyboardEvent ev);
     }
 }
 
