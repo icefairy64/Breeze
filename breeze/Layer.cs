@@ -48,6 +48,7 @@ namespace Breeze.Graphics
 			int index = Children.FindIndex(item => item.ZOrder > dr.ZOrder);
 			index = (index >= 0) ? index : Children.Count;
 			Children.Insert(index, dr);
+            dr.Layer = Name;
 		}
 	}
 }

@@ -70,7 +70,7 @@ namespace Breeze
 					Exit = ProcessEvents(ev);
 				if (OnMainLoop != null)
 					OnMainLoop();
-				SDL.SDL_Delay(DrawTimerInterval);
+				//SDL.SDL_Delay(DrawTimerInterval);
 				Render();
 			}
 			

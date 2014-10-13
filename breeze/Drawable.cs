@@ -44,11 +44,13 @@ namespace Breeze.Graphics
 
 		public double Angle;
 		protected byte FAlpha;
+
 		public byte Alpha
 		{
 			get	{ return FAlpha; }
 			set { FAlpha = value; SetAlpha(value); }
 		}
+
 		public double FScale;
 		public double RotationCenterX;
 		public double RotationCenterY;
@@ -56,6 +58,7 @@ namespace Breeze.Graphics
 		protected SDL.SDL_Point RotationCenter;
 		protected List<Drawable> Children;
         protected SDL.SDL_Rect DstRect;
+        public string Layer;
 		
 		public double Scale
 		{

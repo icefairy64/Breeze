@@ -48,6 +48,8 @@
     <Compile Include="Layer.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="Screen.cs" />
+    <Compile Include="Automations.cs" />
+    <Compile Include="Actor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

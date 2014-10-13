@@ -27,7 +27,7 @@ namespace Breeze.Graphics
         public static void InsertLayer(Layer layer)
         {
             int index = Layers.FindIndex(lr => lr.ZOrder > layer.ZOrder);
-            index = index > 0 ? index : Layers.Count;
+            index = (index >= 0) ? index : Layers.Count;
             Layers.Insert(index, layer);
             LayersDict.Add(layer.Name, layer);
         }
@@ -46,7 +46,7 @@ namespace Breeze.Graphics
             return lr;
         }
 
-        public static Layer GetLayer(string name)
+        public static Layer FindLayer(string name)
         {
             return LayersDict[name];
         }

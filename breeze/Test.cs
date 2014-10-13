@@ -9,6 +9,8 @@ namespace Breeze
 	{		
 		static Graphics.Sprite spr;
 		static Graphics.Layer layer;
+        static Graphics.Text txt;
+        static int frames = 0;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -33,6 +35,12 @@ namespace Breeze
 			
 			return 1;
 		}	
+
+        static void OnDraw(IntPtr renderer)
+        {
+            frames++;
+            txt.Value = String.Format("Frames: {0}", frames);
+        }
 		
 		static void OnInit()
 		{
@@ -49,7 +57,7 @@ namespace Breeze
 			spr.AnimSpeed = 1;
 			layer.Insert(spr);
 
-            Graphics.Text txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone24"));
+            txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone24"));
             txt.Value = "L-Kun uses BREEZE v0.1!";
             txt.X = 100;
             txt.Y = 60;
@@ -62,6 +70,7 @@ namespace Breeze
 		{
 			BreezeCore.OnEvent = ProcessEvents;
 			BreezeCore.OnInit = OnInit;
+            BreezeCore.OnDraw = OnDraw;
 			
 			BreezeCore.Init("Breeze", 640, 480);
 			BreezeCore.Start();
