@@ -66,6 +66,8 @@ namespace Breeze.Graphics
 			set { FScale = value; CalculateRotationCenter(); }
 		}
 
+        // Methods
+
         void CalculateDestRect()
         {
             DstRect.x = FX;
@@ -105,8 +107,11 @@ namespace Breeze.Graphics
 			int rx = X + dx;
 			int ry = Y + dy;
 			double rangle = Angle + dangle;
-			
+
+            DstRect.x = rx;
+            DstRect.y = ry;
 			InternalDraw(rx, ry, rangle);
+
 			foreach (Drawable dr in Children)
 				dr.Draw(rx, ry, rangle);
 		}

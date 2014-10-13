@@ -5,6 +5,8 @@ namespace Breeze.Game
     public class Actor
     {
         public Graphics.Drawable Image;
+        public string Name { get; protected set; }
+        public int InstanceID;
         protected int FX, FY;
 
         public int X
@@ -27,11 +29,12 @@ namespace Breeze.Game
             }
         }
 
-        public Actor()
+        public Actor(string name)
         {
+            Name = name;
         }
 
-        public Actor(Graphics.Drawable image) : this()
+        public Actor(string name, Graphics.Drawable image) : this(name)
         {
             Image = image;
         }

@@ -12,7 +12,8 @@ namespace Breeze
 	public delegate int EventHandler(SDL.SDL_Event ev);
 	public delegate void DrawHandler(IntPtr renderer);
 	public delegate void CoreEventHandler();
-	
+    public delegate void KeyInputHandler(SDL.SDL_KeyboardEvent ev);
+
 	public static class BreezeCore
 	{
 		public static IntPtr Window;
@@ -25,11 +26,12 @@ namespace Breeze
 		public static CoreEventHandler OnMainLoopStart;
 		public static CoreEventHandler OnMainLoop;
 		public static CoreEventHandler OnMainLoopFinish;
+        public static KeyInputHandler OnKey;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
 		public static uint TargetFPS;
 		public static SDL.SDL_Rect ScrRect;
 		static uint DrawTimerInterval;
-		static bool Exit = false;
+		public static bool Exit = false;
 		static int AnimateTimer;
 		
 		public static void Init(string title, int scrw, int scrh)
@@ -67,7 +69,7 @@ namespace Breeze
 			while (!Exit)
 			{
 				while (SDL.SDL_PollEvent(out ev) == 1)
-					Exit = ProcessEvents(ev);
+					ProcessEvents(ev);
 				if (OnMainLoop != null)
 					OnMainLoop();
 				//SDL.SDL_Delay(DrawTimerInterval);
@@ -90,7 +92,13 @@ namespace Breeze
 		
 		static bool ProcessEvents(SDL.SDL_Event ev)
 		{
-			return OnEvent(ev) == 1;
+            if ((ev.type == SDL.SDL_EventType.SDL_KEYDOWN) || (ev.type == SDL.SDL_EventType.SDL_KEYUP))
+            {
+                if (OnKey != null)
+                    OnKey(ev.key);
+                return false;
+            }
+            return OnEvent(ev) == 1;
 		}
 		
 		static int WatchEvents(IntPtr userdata, IntPtr ev)

@@ -50,6 +50,7 @@
     <Compile Include="Screen.cs" />
     <Compile Include="Automations.cs" />
     <Compile Include="Actor.cs" />
+    <Compile Include="GameState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

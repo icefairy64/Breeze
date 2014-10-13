@@ -9,6 +9,8 @@ namespace Breeze.Graphics
         static List<Layer> Layers;
         static Dictionary<string, Layer> LayersDict;
         public static IntPtr Buffer { get; private set; }
+        public static int CamX;
+        public static int CamY;
 
         public static void Init()
         {
@@ -61,7 +63,7 @@ namespace Breeze.Graphics
 
             // Rendering
             foreach (Layer lr in Layers)
-                lr.Draw();
+                lr.Draw(-CamX, -CamY, 0);
             
             // Drawing
             SDL.SDL_SetRenderTarget(BreezeCore.Renderer, IntPtr.Zero);

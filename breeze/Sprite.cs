@@ -17,10 +17,7 @@ namespace Breeze.Graphics
 		
 		public int CurrentImage
 		{
-			get
-			{
-				return FCurrentImage;
-			}
+			get { return FCurrentImage;	}
 			set
 			{
 				Time = 0;
@@ -32,10 +29,7 @@ namespace Breeze.Graphics
 		
 		public int CurrentFrame
 		{
-			get
-			{
-				return FCurrentFrame;
-			}
+            get { return FCurrentFrame; }
 			set
 			{
 				FCurrentFrame = value;
@@ -92,7 +86,7 @@ namespace Breeze.Graphics
 		
 		protected override void InternalDraw(int x, int y, double angle)
 		{
-			SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Images[FCurrentImage].Texture, ref SrcRect, ref DstRect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+            SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Images[FCurrentImage].Texture, ref SrcRect, ref DstRect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
 		}
 		
 		protected void Animate(object sender, TimerEventArgs e)
