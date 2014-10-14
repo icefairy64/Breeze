@@ -17,7 +17,7 @@ namespace Breeze.Game
             Counter = new Dictionary<string, int>();
         }
 
-        public void InsertActor(Actor actor)
+        public void AddActor(Actor actor)
         {
             if (!Counter.ContainsKey(actor.Name))
                 Counter.Add(actor.Name, 0);

@@ -51,7 +51,7 @@ namespace Breeze
         {
             frames++;
             txt.Value = String.Format("Frame: {0}", frames);
-            Graphics.Screen.FindLayer("back").Alpha = (byte)(frames % 0xff);
+            //txt.Value = Resources.Manager.GetResourceList();
         }
 		
 		static void OnInit()
@@ -72,7 +72,7 @@ namespace Breeze
 
             layer = Graphics.Screen.CreateLayer("back");
             layer.ScrollSpeed = 0.7;
-            layer.Alpha = 0x10;
+            layer.Alpha = 0xa0;
 
             txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone24"));
             txt.Value = "L-Kun uses BREEZE v0.1!";

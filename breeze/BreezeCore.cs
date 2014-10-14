@@ -29,9 +29,7 @@ namespace Breeze
         public static KeyInputHandler OnKey;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
         public static event EventHandler<TimerEventArgs> OnUpdate;
-		public static uint TargetFPS;
 		public static SDL.SDL_Rect ScrRect;
-		static uint DrawTimerInterval;
 		public static bool Exit = false;
 		static int AnimateTimer;
         static int UpdateTimer;
@@ -60,8 +58,6 @@ namespace Breeze
 			ScrW = scrw;
 			ScrH = scrh;
 			ScrRect = new SDL.SDL_Rect() { x = 0, y = 0, w = ScrW, h = ScrH };
-			TargetFPS = 60;
-			DrawTimerInterval = 1000 / TargetFPS;
 			
             // Initializing SDL subsystems
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_TIMER | SDL.SDL_INIT_GAMECONTROLLER | SDL.SDL_INIT_JOYSTICK);
@@ -74,7 +70,6 @@ namespace Breeze
 			SDL.SDL_Delay(500);
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
             SDL_ttf.TTF_Init();
-			//SDL.SDL_AddEventWatch(WatchEvents, IntPtr.Zero);
 			
 			Resources.Manager.Init();
             Graphics.Screen.Init();
@@ -98,7 +93,6 @@ namespace Breeze
 					ProcessEvents(ev);
 				if (OnMainLoop != null)
 					OnMainLoop();
-				//SDL.SDL_Delay(DrawTimerInterval);
 				Render();
 			}
 			
@@ -148,7 +142,6 @@ namespace Breeze
 		
 		static void Render()
 		{
-			//SDL.SDL_RenderFillRect(Renderer, ref ScrRect);
 			SDL.SDL_RenderClear(Renderer);
             Graphics.Screen.Draw();
             if (OnDraw != null)

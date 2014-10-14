@@ -59,6 +59,14 @@ namespace Breeze.Resources
         {
             return (Font)Resources[FontPref + name];
         }
+
+        public static string GetResourceList()
+        {
+            string tmp = "";
+            foreach (Resource res in Resources.Values)
+                tmp += res.Name + "\n";
+            return tmp;
+        }
 	}
 }
 
