@@ -26,7 +26,7 @@ namespace Breeze
 		public static CoreEventHandler OnMainLoopStart;
 		public static CoreEventHandler OnMainLoop;
 		public static CoreEventHandler OnMainLoopFinish;
-        public static KeyInputHandler OnKey;
+        public static KeyInputHandler OnKeyInput;
 		public static event EventHandler<TimerEventArgs> OnAnimate;
         public static event EventHandler<TimerEventArgs> OnUpdate;
 		public static SDL.SDL_Rect ScrRect;
@@ -48,7 +48,7 @@ namespace Breeze
                 FCurrentState = value;
 
                 FCurrentState.Enter();
-                OnKey = FCurrentState.KeyInput;
+                OnKeyInput = FCurrentState.KeyInput;
                 OnUpdate += FCurrentState.Update;
             }
         }
@@ -64,10 +64,10 @@ namespace Breeze
 			SDL.SDL_Delay(500);
             
             // Hints
-            //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");
+            //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");  // Linear scaling
 			
             SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
-			SDL.SDL_Delay(500);
+			SDL.SDL_Delay(500); // Give SDL some time to warm up :3
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
             SDL_ttf.TTF_Init();
 			
@@ -124,8 +124,8 @@ namespace Breeze
 		{
             if ((ev.type == SDL.SDL_EventType.SDL_KEYDOWN) || (ev.type == SDL.SDL_EventType.SDL_KEYUP))
             {
-                if (OnKey != null)
-                    OnKey(ev.key);
+                if (OnKeyInput != null)
+                    OnKeyInput(ev.key);
                 return false;
             }
             return OnEvent(ev) == 1;

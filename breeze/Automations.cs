@@ -27,7 +27,7 @@ namespace Breeze
         }
     }
 
-    public delegate void AutomationFinishHandler(ref object sender);
+    public delegate void AutomationFinishHandler(object sender);
         
     public abstract class Automation<T>
     {
@@ -75,7 +75,7 @@ namespace Breeze
         }
 
         protected abstract void CalculateValue(double k);
-        protected abstract void AutomateClient(ref object client); 
+        protected abstract void AutomateClient(object client); 
 
         public void Update(object sender, TimerEventArgs e)
         {
@@ -95,7 +95,8 @@ namespace Breeze
                     else
                     {
                         if (OnFinish != null)
-                            OnFinish(ref this);
+                            OnFinish(this);
+                        Active = false;
                     }
                 }
             }
@@ -109,12 +110,13 @@ namespace Breeze
 
             CalculateValue((Time - prevPos) / (Pos[CurrentPos] - prevPos));
             foreach (object client in Clients)
-                AutomateClient(ref client);
+                AutomateClient(client);
         }
 
         ~Automation()
         {
-            Active = false;
+            if (FActive)
+                Active = false;
         }
     }
 }

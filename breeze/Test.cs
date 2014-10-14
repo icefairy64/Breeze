@@ -111,7 +111,7 @@ namespace Breeze
 			BreezeCore.OnEvent = ProcessEvents;
 			BreezeCore.OnInit = OnInit;
             BreezeCore.OnDraw = OnDraw;
-            BreezeCore.OnKey = OnKey;
+            BreezeCore.OnKeyInput = OnKey;
 			
 			BreezeCore.Init("Breeze", 800, 600);
 			BreezeCore.Start();
