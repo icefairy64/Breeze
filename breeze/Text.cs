@@ -6,10 +6,10 @@ namespace Breeze.Graphics
     public class Text : Drawable
     {
         string FValue;
-        IntPtr Texture;
+        protected IntPtr Texture;
         public Resources.Font Font;
         public SDL.SDL_Color Color;
-        SDL.SDL_Rect SrcRect;
+        protected SDL.SDL_Rect SrcRect;
 
         public string Value
         {

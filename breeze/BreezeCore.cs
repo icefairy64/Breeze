@@ -65,7 +65,8 @@ namespace Breeze
             
             // Hints
             //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");  // Linear scaling
-			
+            SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_VSYNC, "1");
+            
             SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
 			SDL.SDL_Delay(500); // Give SDL some time to warm up :3
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
@@ -147,6 +148,7 @@ namespace Breeze
             if (OnDraw != null)
                 OnDraw(Renderer);
 			SDL.SDL_RenderPresent(Renderer);
+            //SDL.SDL_Delay(15);
 		}
 		
 		public static void Finish()

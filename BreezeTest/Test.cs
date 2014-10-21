@@ -1,18 +1,21 @@
 using System;
+using Breeze;
 using Breeze.Graphics;
 using Breeze.Resources;
 using SDL2;
 
-namespace Breeze
+namespace BreezeTest
 {
-	class TestClass
+	class MainClass
 	{		
-		static Graphics.Sprite spr;
-		static Graphics.Layer layer;
-        static Graphics.Text txt;
+        static Breeze.Graphics.Sprite spr;
+        static Breeze.Graphics.Layer layer;
+        static Breeze.Graphics.Text txt;
         static int frames = 0;
         static bool[] keystate = new bool[4];
         static uint lastint = 0;
+        static int dir = 2;
+        static int fps = 0;
 		
 		static int ProcessEvents(SDL.SDL_Event ev)
 		{
@@ -34,53 +37,65 @@ namespace Breeze
 			SDL.SDL_PushEvent(ref ev);
 
             if (keystate[0])
-                Graphics.Screen.CamY -= 1;
+                Breeze.Graphics.Screen.CamY -= 1;
             if (keystate[1])
-                Graphics.Screen.CamX += 1;
+                Breeze.Graphics.Screen.CamX += 1;
             if (keystate[2])
-                Graphics.Screen.CamY += 1;
+                Breeze.Graphics.Screen.CamY += 1;
             if (keystate[3])
-                Graphics.Screen.CamX -= 1;
+                Breeze.Graphics.Screen.CamX -= 1;
             
             lastint = interval;
 
 			return 1;
 		}	
 
+        static uint FlushFrameCount(uint interval, IntPtr param)
+        {
+            fps = (int)(frames * 1000 / interval);
+            frames = 0;
+            return interval;
+        }
+
         static void OnDraw(IntPtr renderer)
         {
             frames++;
-            txt.Value = String.Format("Frame: {0}", frames);
-            //txt.Value = Resources.Manager.GetResourceList();
+            txt.Value = String.Format("FPS: {0}", fps);
         }
 		
 		static void OnInit()
 		{
-			Resources.Manager.LoadSprite("lkun.bspr");
-            Resources.Manager.LoadFont("hammersmithone.ttf", 24);
+            Breeze.Resources.Manager.LoadSprite("cornet_0.bspr");
+            Breeze.Resources.Manager.LoadSprite("cornet_1.bspr");
+            Breeze.Resources.Manager.LoadSprite("cornet_2.bspr");
+            Breeze.Resources.Manager.LoadSprite("cornet_3.bspr");
+            Breeze.Resources.Manager.LoadFont("hammersmithone.ttf", 24);
 
-            layer = Graphics.Screen.CreateLayer("front", 1);
-            layer.Alpha = 0xa0;
+            layer = Breeze.Graphics.Screen.CreateLayer("front", 1);
             layer.BlendMode = SDL.SDL_BlendMode.SDL_BLENDMODE_ADD;
 
-            spr = new Graphics.Sprite("lkun");
-			spr.Scale = 3;
+            spr = new Breeze.Graphics.Sprite("cornet_walk0");
+            spr.AddImage("cornet_walk1");
+            spr.AddImage("cornet_walk2");
+            spr.AddImage("cornet_walk3");
+            spr.CurrentImage = 2;
+			spr.Scale = 2;
             spr.X = (int)(BreezeCore.ScrW / 2 - spr.W * spr.Scale / 2);
             spr.Y = (int)(BreezeCore.ScrH / 2 - spr.H * spr.Scale / 2);
 			spr.AnimSpeed = 1;
 			layer.Insert(spr);
 
-            layer = Graphics.Screen.CreateLayer("back");
-            layer.ScrollSpeed = 0.7;
+            layer = Breeze.Graphics.Screen.CreateLayer("back");
             layer.Alpha = 0xa0;
 
-            txt = new Graphics.Text(Resources.Manager.FindFont("hammersmithone24"));
+            txt = new Breeze.Graphics.Text(Breeze.Resources.Manager.FindFont("hammersmithone24"));
             txt.Value = "L-Kun uses BREEZE v0.1!";
-            txt.X = BreezeCore.ScrW / 2 - txt.W / 2;
-            txt.Y = BreezeCore.ScrH / 2 - txt.H / 2;
+            txt.X = 32;
+            txt.Y = 32;
             layer.Insert(txt);
 			
 			SDL.SDL_AddTimer(1, Timer, IntPtr.Zero);
+            SDL.SDL_AddTimer(1000, FlushFrameCount, IntPtr.Zero);
 		}
 
         static void OnKey(SDL.SDL_KeyboardEvent ev)
@@ -102,6 +117,12 @@ namespace Breeze
                     break;
                 case SDL.SDL_Keycode.SDLK_ESCAPE:
                     BreezeCore.Exit = true;
+                    break;
+                case SDL.SDL_Keycode.SDLK_SPACE:
+                    if (!newstate)
+                        break;
+                    dir = (dir + 1) % 4;
+                    spr.CurrentImage = dir;
                     break;
             }
         }

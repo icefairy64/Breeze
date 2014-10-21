@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SDL2;
 
 namespace Breeze
 {
@@ -29,13 +30,13 @@ namespace Breeze
 
     public delegate void AutomationFinishHandler(object sender);
         
-    public abstract class Automation<T>
+    public abstract class Automation<T, C>
     {
         public AutomationFinishHandler OnFinish;
         public bool Loop = false;
         public double Speed = 1.0;
         protected double Time = 0.0;
-        protected List<object> Clients;
+        protected List<C> Clients;
         protected List<T> Values;
         protected List<int> Pos;
         protected List<InterpolationMethod> InterpolationMethods;
@@ -59,7 +60,7 @@ namespace Breeze
 
         public Automation(T startValue, bool active = true)
         {
-            Clients = new List<object>();
+            Clients = new List<C>();
             Values = new List<T>();
             Values.Add(startValue);
             Pos = new List<int>();
@@ -75,7 +76,7 @@ namespace Breeze
         }
 
         protected abstract void CalculateValue(double k);
-        protected abstract void AutomateClient(object client); 
+        protected abstract void AutomateClient(C client); 
 
         public void Update(object sender, TimerEventArgs e)
         {
@@ -101,7 +102,7 @@ namespace Breeze
                 }
             }
 
-            // Calculating values and sending them to clients
+            // Calculating current value and sending it to clients
             int prevPos;
             if (CurrentPos == 0)
                 prevPos = 0;
@@ -109,8 +110,18 @@ namespace Breeze
                 prevPos = Pos[CurrentPos - 1];
 
             CalculateValue((Time - prevPos) / (Pos[CurrentPos] - prevPos));
-            foreach (object client in Clients)
+            foreach (C client in Clients)
                 AutomateClient(client);
+        }
+
+        public void AttachClient(C client)
+        {
+            Clients.Add(client);
+        }
+
+        public void DetachClient(C client)
+        {
+            Clients.Remove(client);
         }
 
         ~Automation()
@@ -120,4 +131,3 @@ namespace Breeze
         }
     }
 }
-

@@ -7,7 +7,7 @@ namespace Breeze.Graphics
 {
 	public class Sprite : Drawable
 	{
-		public List<Resources.Sprite> Images;
+		protected List<Resources.Sprite> Images;
 		public double AnimSpeed;
 		public bool Animated;
 		protected double Time;
@@ -88,6 +88,11 @@ namespace Breeze.Graphics
 			}
 			Start();
 		}
+
+        public void AddImage(string name)
+        {
+            Images.Add(Resources.Manager.FindSprite(name));
+        }
 		
 		protected override void InternalDraw(int x, int y, double angle)
 		{
