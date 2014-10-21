@@ -28,11 +28,15 @@ namespace Breeze
         }
     }
 
-    public delegate void AutomationFinishHandler(object sender);
-        
-    public abstract class Automation<T, C>
+    public delegate void AutomationFinishHandler(BaseAutomation sender);
+
+    public abstract class BaseAutomation
     {
         public AutomationFinishHandler OnFinish;
+    }
+        
+    public abstract class Automation<T, C> : BaseAutomation
+    {
         public bool Loop = false;
         public double Speed = 1.0;
         protected double Time = 0.0;
@@ -58,7 +62,7 @@ namespace Breeze
             }
         }
 
-        public Automation(T startValue, bool active = true)
+        public Automation(T startValue, bool active = false)
         {
             Clients = new List<C>();
             Values = new List<T>();
@@ -98,6 +102,7 @@ namespace Breeze
                         if (OnFinish != null)
                             OnFinish(this);
                         Active = false;
+                        return;
                     }
                 }
             }
@@ -128,6 +133,26 @@ namespace Breeze
         {
             if (FActive)
                 Active = false;
+        }
+    }
+}
+
+namespace Breeze.Graphics
+{
+    public class AlphaAutomation : Automation<byte, Drawable>
+    {
+        public AlphaAutomation(byte startVal, bool active = false) : base(startVal, active)
+        {
+        }
+
+        protected override void CalculateValue(double k)
+        {
+            CurrentValue = (byte)(Values[CurrentPos] + (Values[CurrentPos + 1] - Values[CurrentPos]) * k);
+        }
+
+        protected override void AutomateClient(Drawable client)
+        {
+            client.Alpha = CurrentValue;
         }
     }
 }

@@ -66,6 +66,7 @@ namespace Breeze
             // Hints
             //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");  // Linear scaling
             SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_VSYNC, "1");
+
             
             SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
 			SDL.SDL_Delay(500); // Give SDL some time to warm up :3

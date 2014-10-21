@@ -77,13 +77,13 @@ namespace Breeze.Graphics
 			Start();
 		}
 		
-		public Sprite(List<string> names, int zorder = 0) : this(zorder)
+		public Sprite(string[] names, int zorder = 0) : this(zorder)
 		{
-			if (names.Count == 0)
+			if (names.Length == 0)
 				return;
-			foreach (string fn in names)
-			{
-				Images.Add(Resources.Manager.FindSprite(fn));
+			for (int i = 0; i < names.Length; i++)
+            {
+				Images.Add(Resources.Manager.FindSprite(names[i]));
 				Animated = Animated || Images[Images.Count - 1].Animated;
 			}
 			Start();
@@ -102,7 +102,10 @@ namespace Breeze.Graphics
 		protected void Animate(object sender, TimerEventArgs e)
 		{
 			Time += e.Interval * AnimSpeed;
-			
+
+            if (Images[FCurrentImage].Animated == false)
+                return;
+
 			if (Time >= Images[FCurrentImage].FrameIntervals[FCurrentFrame])
 			{
 				// Preparing for frame switch

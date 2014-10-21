@@ -36,6 +36,7 @@ namespace Breeze.Resources
 			Rows = 1;
 			uint format;
 			int access;
+            string dir = filename.Remove(filename.Length - Path.GetFileName(filename).Length);
 			
 			if (!filename.EndsWith("bspr"))
 			{
@@ -68,7 +69,7 @@ namespace Breeze.Resources
 								Rows = uint.Parse(el.GetAttribute("rows"));
 							if (el.HasAttribute("animated"))
 								Animated = el.GetAttribute("animated") == "1" ? true : false;
-							Texture = SDL_image.IMG_LoadTexture(BreezeCore.Renderer, el.InnerText);
+                            Texture = SDL_image.IMG_LoadTexture(BreezeCore.Renderer, dir + el.InnerText);
 							SDL.SDL_QueryTexture(Texture, out format, out access, out W, out H);
 							W /= (int)Cols;
 							H /= (int)Rows;

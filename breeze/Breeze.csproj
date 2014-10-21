@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Breeze</RootNamespace>
     <AssemblyName>breeze</AssemblyName>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>

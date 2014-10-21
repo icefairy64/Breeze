@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using SDL2;
 
@@ -8,6 +9,10 @@ namespace Breeze.Resources
 	{
 		static readonly string SpritePref = "sprite.";
         static readonly string FontPref = "font.";
+
+        public static string RootDir = "";
+        public static string SpritesDir = "";
+        public static string FontsDir = "";
 		
 		static Dictionary<string, Resource> Resources;
 		
@@ -21,15 +26,25 @@ namespace Breeze.Resources
 			UnloadAll();
 		}
 		
-		public static void LoadSprite(string filename)
+        public static string PathToSprites()
+        {
+            return RootDir + SpritesDir;
+        }
+
+        public static string PathToFonts()
+        {
+            return RootDir + FontsDir;
+        }
+        
+        public static void LoadSprite(string filename)
 		{
-			Sprite spr = new Sprite(filename);
+            Sprite spr = new Sprite(PathToSprites() + filename);
 			Resources.Add(SpritePref + spr.Name, spr);
 		}
 
         public static void LoadFont(string filename, int pt)
         {
-            Font fnt = new Font(filename, pt);
+            Font fnt = new Font(PathToFonts() + filename, pt);
             Resources.Add(FontPref + fnt.Name, fnt);
         }
 		
