@@ -7,25 +7,30 @@ namespace Breeze.Game
         public Graphics.Drawable Image;
         public string Name { get; protected set; }
         public int InstanceID;
-        protected int FX, FY;
+        protected double FX, FY;
 
-        public int X
+        public string InstanceStr
+        {
+            get { return Name + InstanceID.ToString(); }
+        }
+
+        public double X
         {
             get { return FX; }
             set
             {
                 FX = value;
-                Image.X = FX;
+                Image.X = (int)value;
             }
         }
 
-        public int Y
+        public double Y
         {
             get { return FY; }
             set
             {
                 FY = value;
-                Image.Y = FY;
+                Image.Y = (int)value;
             }
         }
 

@@ -9,6 +9,7 @@ namespace Breeze.Game
         protected Dictionary<string, Actor> Actors;
         protected Dictionary<string, int> Counter;
         protected List<BaseAutomation> Automations;
+        protected List<IUpdatable> Updatables;
         public GameState Prev;
         protected uint Time = 0;
 
@@ -17,6 +18,7 @@ namespace Breeze.Game
             Actors = new Dictionary<string, Actor>();
             Counter = new Dictionary<string, int>();
             Automations = new List<BaseAutomation>();
+            Updatables = new List<IUpdatable>();
         }
 
         public void AddActor(Actor actor)
@@ -27,11 +29,27 @@ namespace Breeze.Game
             Actors.Add(actor.Name + Counter[actor.Name].ToString(), actor);
             actor.InstanceID = Counter[actor.Name];
             Counter[actor.Name]++;
+
+            if (actor is IUpdatable)
+                AddUpdatable((IUpdatable)actor);
         }
 
         public void RemoveActor(string instance)
         {
+            if (Actors[instance] is IUpdatable)
+                RemoveUpdatable((IUpdatable)Actors[instance]);
+
             Actors.Remove(instance);
+        }
+
+        public void AddUpdatable(IUpdatable upd)
+        {
+            Updatables.Add(upd);
+        }
+
+        public void RemoveUpdatable(IUpdatable upd)
+        {
+            Updatables.Remove(upd);
         }
 
         protected virtual void OnAutomationFinish(BaseAutomation sender)
@@ -53,6 +71,9 @@ namespace Breeze.Game
         public virtual void Update(object sender, TimerEventArgs e)
         {
             Time += e.Interval;
+
+            foreach (IUpdatable upd in Updatables)
+                upd.Update(e.Interval);
         }
 
         public abstract void Enter();

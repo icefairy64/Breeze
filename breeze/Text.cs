@@ -49,6 +49,12 @@ namespace Breeze.Graphics
             Font = font;
             Color = new SDL.SDL_Color() { r = 0xff, g = 0xff, b = 0xff, a = 0xff };
         }
+
+        ~Text()
+        {
+            if (Texture != IntPtr.Zero)
+                SDL.SDL_DestroyTexture(Texture);
+        }
     }
 }
 

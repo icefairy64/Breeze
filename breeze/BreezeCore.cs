@@ -9,10 +9,15 @@ namespace Breeze
 		public uint Interval;
 	}
 	
-	public delegate int EventHandler(SDL.SDL_Event ev);
+	public delegate int SDLEventHandler(SDL.SDL_Event ev);
 	public delegate void DrawHandler(IntPtr renderer);
 	public delegate void CoreEventHandler();
     public delegate void KeyInputHandler(SDL.SDL_KeyboardEvent ev);
+
+    public interface IUpdatable
+    {
+        void Update(uint interval);
+    }
 
 	public static class BreezeCore
 	{
@@ -20,7 +25,7 @@ namespace Breeze
 		public static IntPtr Renderer;
 		public static int ScrW { get; private set; }
 		public static int ScrH { get; private set; }
-		public static EventHandler OnEvent;
+        public static SDLEventHandler OnEvent;
 		public static DrawHandler OnDraw;
 		public static CoreEventHandler OnInit;
 		public static CoreEventHandler OnMainLoopStart;
@@ -149,7 +154,6 @@ namespace Breeze
             if (OnDraw != null)
                 OnDraw(Renderer);
 			SDL.SDL_RenderPresent(Renderer);
-            //SDL.SDL_Delay(15);
 		}
 		
 		public static void Finish()

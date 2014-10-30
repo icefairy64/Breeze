@@ -1,14 +1,16 @@
 ﻿using System;
 using Breeze;
 using Breeze.Game;
+using Breeze.Graphics;
 using SDL2;
 
 namespace BreezeTest
 {
-    public class Cornet : Actor
+    public class Cornet : Actor, IUpdatable
     {
         int FDirection;
         int FWalking;
+        double Speed = 1 / 6f;
 
         public bool Walking
         {
@@ -39,9 +41,18 @@ namespace BreezeTest
         {
             Image = new Breeze.Graphics.Sprite(new string[]{ "cornet_stand0", "cornet_stand1", "cornet_stand2", "cornet_stand3", "cornet_walk0", "cornet_walk1", "cornet_walk2", "cornet_walk3" });
             Image.Scale = 2;
-            Breeze.Graphics.Screen.FindLayer("front").Insert(Image);
-            X = (int)(BreezeCore.ScrW / 2 - Image.W);
-            Y = (int)(BreezeCore.ScrH / 2 - Image.H);
+            Screen.FindLayer("front").Insert(Image);
+            X = BreezeCore.ScrW / 2 - Image.W;
+            Y = BreezeCore.ScrH / 2 - Image.H;
+        }
+
+        public void Update(uint interval)
+        {
+            if (Walking)
+            {
+                X += (2 - FDirection) * (FDirection % 2) * interval * Speed;
+                Y += (FDirection - 1) * ((FDirection + 1) % 2) * interval * Speed;
+            }
         }
     }
 
@@ -49,6 +60,7 @@ namespace BreezeTest
     {
         bool[] KeyState = new bool[4];
         Cornet Player;
+        Camera Cam;
 
         public TestState()
         {
@@ -60,12 +72,25 @@ namespace BreezeTest
             Breeze.Resources.Manager.LoadSprite("cornet_stand1.png");
             Breeze.Resources.Manager.LoadSprite("cornet_stand2.png");
             Breeze.Resources.Manager.LoadSprite("cornet_stand3.png");
+            Breeze.Resources.Manager.LoadSprite("mothergreen_house0.png");
             Breeze.Resources.Manager.LoadFont("hammersmithone.ttf", 24);
 
-            Breeze.Graphics.Screen.CreateLayer("front", 1).Alpha = 0;
+            Screen.CreateLayer("front", 1);
+            Screen.CreateLayer("back", 0);
+
+            Breeze.Graphics.Sprite back = new Breeze.Graphics.Sprite("mothergreen_house0");
+            back.Scale = 2;
+            back.X = BreezeCore.ScrW / 2 - back.W;
+            back.Y = BreezeCore.ScrH / 2 - back.H;
+            Screen.FindLayer("back").Insert(back);
 
             Player = new Cornet();
             AddActor(Player);
+
+            Cam = new Camera();
+            Cam.Inertia = 0.1;
+            Cam.Radius = BreezeCore.ScrH / 2 - 20;
+            AddUpdatable(Cam);
         }
 
         public override void Enter()
@@ -74,7 +99,7 @@ namespace BreezeTest
             auto.AddPoint(1500, 0xff, InterpolationMethod.Linear);
             AddAutomation(auto);
             auto.AttachClient(Breeze.Graphics.Screen.FindLayer("front"));
-            auto.Active = true;
+            //auto.Active = true;
         }
 
         public override void Leave()
@@ -130,6 +155,13 @@ namespace BreezeTest
             Player.Walking = walking;
             if (!newstate)
                 Player.Direction = dir;
+        }
+
+        public override void Update(object sender, TimerEventArgs e)
+        {
+            base.Update(sender, e);
+            Cam.X = Player.X + Player.Image.W / 2;
+            Cam.Y = Player.Y + Player.Image.H / 2;
         }
 
         ~TestState()
