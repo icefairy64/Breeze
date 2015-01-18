@@ -12,7 +12,8 @@ namespace Breeze.Graphics
         public int X
         {
             get { return FX; }
-            set {
+            set 
+            {
                 FX = value;
                 CalculateDestRect();
             }
@@ -20,7 +21,8 @@ namespace Breeze.Graphics
         public int Y
         {
             get { return FY; }
-            set {
+            set 
+            {
                 FY = value;
                 CalculateDestRect();
             }
@@ -28,7 +30,8 @@ namespace Breeze.Graphics
         public int W
         {
             get { return FW; }
-            protected set {
+            protected set 
+            {
                 FW = value;
                 CalculateDestRect();
             }
@@ -36,7 +39,8 @@ namespace Breeze.Graphics
         public int H
         {
             get { return FH; }
-            protected set {
+            protected set 
+            {
                 FH = value;
                 CalculateDestRect();
             }
@@ -48,7 +52,11 @@ namespace Breeze.Graphics
 		public byte Alpha
 		{
 			get	{ return FAlpha; }
-			set { FAlpha = value; SetAlpha(value); }
+			set 
+            { 
+                FAlpha = value; 
+                SetAlpha(value); 
+            }
 		}
 
 		public double FScale;
@@ -70,7 +78,11 @@ namespace Breeze.Graphics
 		public double Scale
 		{
 			get { return FScale; }
-			set { FScale = value; CalculateRotationCenter(); }
+			set 
+            { 
+                FScale = value;
+                CalculateRotationCenter(); 
+            }
 		}
 
         // Methods

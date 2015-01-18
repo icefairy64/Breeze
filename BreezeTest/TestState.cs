@@ -2,6 +2,7 @@
 using Breeze;
 using Breeze.Game;
 using Breeze.Graphics;
+using Breeze.Resources;
 using SDL2;
 
 namespace BreezeTest
@@ -34,12 +35,14 @@ namespace BreezeTest
 
         void ChangeImage()
         {
-            ((Breeze.Graphics.Sprite)Image).CurrentImage = FDirection + FWalking * 4;
+            ((Sprite)Image).CurrentSheet = FDirection + FWalking * 4;
         }
 
-        public Cornet() : base("cornet")
+        public Cornet() : base()
         {
-            Image = new Breeze.Graphics.Sprite(new string[]{ "cornet_stand0", "cornet_stand1", "cornet_stand2", "cornet_stand3", "cornet_walk0", "cornet_walk1", "cornet_walk2", "cornet_walk3" });
+            Name = "cornet";
+            //Image = new Sprite(new string[]{ "cornet_stand0", "cornet_stand1", "cornet_stand2", "cornet_stand3", "cornet_walk0", "cornet_walk1", "cornet_walk2", "cornet_walk3" });
+            Image = new Sprite("cornet");
             Image.Scale = 2;
             Screen.FindLayer("front").Insert(Image);
             X = BreezeCore.ScrW / 2 - Image.W;
@@ -64,21 +67,14 @@ namespace BreezeTest
 
         public TestState()
         {
-            Breeze.Resources.Manager.LoadSprite("cornet_0.bspr");
-            Breeze.Resources.Manager.LoadSprite("cornet_1.bspr");
-            Breeze.Resources.Manager.LoadSprite("cornet_2.bspr");
-            Breeze.Resources.Manager.LoadSprite("cornet_3.bspr");
-            Breeze.Resources.Manager.LoadSprite("cornet_stand0.png");
-            Breeze.Resources.Manager.LoadSprite("cornet_stand1.png");
-            Breeze.Resources.Manager.LoadSprite("cornet_stand2.png");
-            Breeze.Resources.Manager.LoadSprite("cornet_stand3.png");
-            Breeze.Resources.Manager.LoadSprite("mothergreen_house0.png");
-            Breeze.Resources.Manager.LoadFont("hammersmithone.ttf", 24);
+            ResourceManager.Load<SpriteBase>("cornet.bs");
+            ResourceManager.Load<SpriteSheet>("mothergreen_house0.png");
+            ResourceManager.Load<Font>("hammersmithone.ttf:24");
 
             Screen.CreateLayer("front", 1);
             Screen.CreateLayer("back", 0);
 
-            Breeze.Graphics.Sprite back = new Breeze.Graphics.Sprite("mothergreen_house0");
+            Sprite back = new Sprite(new string[]{ "mothergreen_house0" });
             back.Scale = 2;
             back.X = BreezeCore.ScrW / 2 - back.W;
             back.Y = BreezeCore.ScrH / 2 - back.H;
@@ -95,16 +91,21 @@ namespace BreezeTest
 
         public override void Enter()
         {
-            Breeze.Graphics.AlphaAutomation auto = new Breeze.Graphics.AlphaAutomation(0);
+            AlphaAutomation auto = new AlphaAutomation(0);
             auto.AddPoint(1500, 0xff, InterpolationMethod.Linear);
             AddAutomation(auto);
-            auto.AttachClient(Breeze.Graphics.Screen.FindLayer("front"));
+            auto.AttachClient(Screen.FindLayer("front"));
             //auto.Active = true;
         }
 
         public override void Leave()
         {
             
+        }
+
+        public override void ProcessEvent(SDL.SDL_Event ev)
+        {
+            //Console.WriteLine(ev.type);
         }
 
         void SetKeyState(int index, bool newstate)

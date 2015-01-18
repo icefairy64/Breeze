@@ -27,7 +27,7 @@ namespace Breeze.Graphics
 		
 		protected override void SetAlpha(byte alpha)
 		{
-            SDL.SDL_SetTextureBlendMode(Buffer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+            //SDL.SDL_SetTextureBlendMode(Buffer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
             SDL.SDL_SetTextureAlphaMod(Buffer, alpha);
 		}
 

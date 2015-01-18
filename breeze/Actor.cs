@@ -2,10 +2,14 @@
 
 namespace Breeze.Game
 {
-    public class Actor
+    public class Saveable : Attribute
+    {
+    }
+
+    public partial class Actor
     {
         public Graphics.Drawable Image;
-        public string Name { get; protected set; }
+        public string Name;
         public int InstanceID;
         protected double FX, FY;
 
@@ -13,7 +17,7 @@ namespace Breeze.Game
         {
             get { return Name + InstanceID.ToString(); }
         }
-
+            
         public double X
         {
             get { return FX; }
@@ -34,12 +38,12 @@ namespace Breeze.Game
             }
         }
 
-        public Actor(string name)
+        public Actor()
         {
-            Name = name;
+            
         }
 
-        public Actor(string name, Graphics.Drawable image) : this(name)
+        public Actor(Graphics.Drawable image) : this()
         {
             Image = image;
         }

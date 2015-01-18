@@ -5,11 +5,8 @@ using SDL2;
 
 namespace Breeze.Resources
 {
-	public static class Manager
+	public static class ResourceManager
 	{
-		static readonly string SpritePref = "sprite.";
-        static readonly string FontPref = "font.";
-
         public static string RootDir = "";
         public static string SpritesDir = "";
         public static string FontsDir = "";
@@ -35,17 +32,27 @@ namespace Breeze.Resources
         {
             return RootDir + FontsDir;
         }
-        
-        public static void LoadSprite(string filename)
-		{
-            Sprite spr = new Sprite(PathToSprites() + filename);
-			Resources.Add(SpritePref + spr.Name, spr);
-		}
 
-        public static void LoadFont(string filename, int pt)
+        public static string PathTo<T>() where T : Resource
         {
-            Font fnt = new Font(PathToFonts() + filename, pt);
-            Resources.Add(FontPref + fnt.Name, fnt);
+            switch (typeof(T).Name)
+            {
+                case "SpriteBase": 
+                    goto case "SpriteSheet";
+                case "SpriteSheet": 
+                    return PathToSprites(); 
+                case "Font":
+                    return PathToFonts();
+                default:
+                    return RootDir;
+            }
+        }
+
+        public static T Load<T>(string filename) where T : Resource
+        {
+            T tmp = (T)Activator.CreateInstance(typeof(T), PathTo<T>() + filename);
+            Resources.Add(typeof(T).Name + ":" + tmp.Name, tmp);
+            return tmp;
         }
 		
 		public static void Unload(string name)
@@ -64,15 +71,10 @@ namespace Breeze.Resources
 		{
 			return Resources[name];
 		}
-		
-		public static Sprite FindSprite(string name)
-		{
-			return (Sprite)Resources[SpritePref + name];
-		}
 
-        public static Font FindFont(string name)
+        public static T Find<T>(string name) where T : Resource
         {
-            return (Font)Resources[FontPref + name];
+            return (T)Resources[typeof(T).Name + ":" + name];
         }
 
         public static string GetResourceList()

@@ -18,7 +18,7 @@ namespace Breeze.Resources
 		public abstract void Free();
 	}
 	
-	public class Sprite : Resource
+	public class SpriteSheet : Resource
 	{
 		public IntPtr Texture;
 		public int[] FrameIntervals;
@@ -29,7 +29,7 @@ namespace Breeze.Resources
 		public int H;
 		public bool Animated;
 		
-		public Sprite(string filename) : base(filename)
+		public SpriteSheet(string filename) : base(filename)
 		{
 			Animated = false;
 			Cols = 1;
@@ -104,7 +104,7 @@ namespace Breeze.Resources
 			Texture = IntPtr.Zero;
 		}
 		
-		~Sprite()
+		~SpriteSheet()
 		{
 			Free();
 		}
@@ -120,6 +120,13 @@ namespace Breeze.Resources
             Name += pt.ToString();
         }
 
+        public Font(string filename) : base(filename)
+        {
+            string[] parts = filename.Split(new char[] {':'}, 2);
+            Handle = SDL_ttf.TTF_OpenFont(parts[0], Convert.ToInt32(parts[1]));
+                Name += parts[1];
+        }
+
         public override void Free()
         {
             if (Handle == IntPtr.Zero)
@@ -132,6 +139,35 @@ namespace Breeze.Resources
         ~Font()
         {
             Free();
+        }
+    }
+
+    public class SpriteBase : Resource
+    {
+        public string[] Sheets;
+
+        public SpriteBase(string filename) : base(filename)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.Load(filename);
+            List<string> tmp = new List<string>();
+
+            XmlElement root = xml.DocumentElement;
+            if (root.HasAttribute("name"))
+                Name = root.GetAttribute("name");
+
+            foreach (XmlNode child in root.ChildNodes)
+            {
+                Resource ld = ResourceManager.Load<SpriteSheet>(((XmlElement)child).InnerText);
+                tmp.Add(ld.Name);
+            }
+
+            Sheets = tmp.ToArray();
+        }
+
+        public override void Free()
+        {
+            // Do nothing; this is managed resource type
         }
     }
 }

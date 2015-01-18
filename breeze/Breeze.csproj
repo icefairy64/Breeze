@@ -51,6 +51,9 @@
     <Compile Include="Automations.cs" />
     <Compile Include="Actor.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="ActorReflection.cs" />
+    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Camera.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,8 +8,8 @@ namespace Breeze
 	{
 		public uint Interval;
 	}
-	
-	public delegate int SDLEventHandler(SDL.SDL_Event ev);
+
+	public delegate void SDLEventHandler(SDL.SDL_Event ev);
 	public delegate void DrawHandler(IntPtr renderer);
 	public delegate void CoreEventHandler();
     public delegate void KeyInputHandler(SDL.SDL_KeyboardEvent ev);
@@ -54,6 +54,7 @@ namespace Breeze
 
                 FCurrentState.Enter();
                 OnKeyInput = FCurrentState.KeyInput;
+                OnEvent = FCurrentState.ProcessEvent;
                 OnUpdate += FCurrentState.Update;
             }
         }
@@ -74,11 +75,11 @@ namespace Breeze
 
             
             SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
-			SDL.SDL_Delay(500); // Give SDL some time to warm up :3
+			SDL.SDL_Delay(500); // Giving SDL some time to warm up
 			SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
             SDL_ttf.TTF_Init();
 			
-			Resources.Manager.Init();
+			Resources.ResourceManager.Init();
             Graphics.Screen.Init();
 			
 			if (OnInit != null)
@@ -127,24 +128,15 @@ namespace Breeze
             return interval;
         }
 		
-		static bool ProcessEvents(SDL.SDL_Event ev)
+		static void ProcessEvents(SDL.SDL_Event ev)
 		{
             if ((ev.type == SDL.SDL_EventType.SDL_KEYDOWN) || (ev.type == SDL.SDL_EventType.SDL_KEYUP))
             {
                 if (OnKeyInput != null)
                     OnKeyInput(ev.key);
-                return false;
+                return;
             }
-            return OnEvent(ev) == 1;
-		}
-		
-		static int WatchEvents(IntPtr userdata, IntPtr ev)
-		{
-			SDL.SDL_Event evt = new SDL.SDL_Event();
-			evt = (SDL.SDL_Event)Marshal.PtrToStructure(ev, typeof(SDL.SDL_Event));
-			if (OnEvent(evt) == 1)
-				Exit = true;
-			return 0;
+            OnEvent(ev);
 		}
 		
 		static void Render()
@@ -158,7 +150,7 @@ namespace Breeze
 		
 		public static void Finish()
 		{
-			Resources.Manager.Free();		
+			Resources.ResourceManager.Free();		
             SDL_ttf.TTF_Quit();
             SDL_image.IMG_Quit();
 			SDL.SDL_Quit();

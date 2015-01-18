@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 using SDL2;
 
 namespace Breeze.Game
@@ -76,9 +77,41 @@ namespace Breeze.Game
                 upd.Update(e.Interval);
         }
 
+        public void ImportMap(string filename)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.Load(filename);
+
+            XmlElement root = xml.DocumentElement;
+            foreach (XmlNode ch in root.ChildNodes)
+            {
+                XmlElement el = (XmlElement)ch;
+                switch (el.Name)
+                {
+                    case "actors":
+                        // Spawning actors
+                        foreach (XmlNode anode in el.ChildNodes)
+                        {
+                            BuildParams par = new BuildParams();
+                            string type = "";
+                            foreach (XmlAttribute attr in ((XmlElement)anode).Attributes)
+                            {
+                                if (attr.Name != "type")
+                                    par.Add(attr.Name, attr.Value);
+                                else
+                                    type = attr.Value;
+                            }
+                            AddActor(Actor.Build(Type.GetType(type), par));
+                        }
+                        break;
+                }
+            }
+        }
+
         public abstract void Enter();
         public abstract void Leave();
         public abstract void KeyInput(SDL.SDL_KeyboardEvent ev);
+        public abstract void ProcessEvent(SDL.SDL_Event ev);
     }
 }
 

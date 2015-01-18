@@ -2,26 +2,28 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 using SDL2;
+using Breeze.Resources;
 
 namespace Breeze.Graphics
 {
 	public class Sprite : Drawable
 	{
-		protected List<Resources.Sprite> Images;
+		protected List<Resources.SpriteSheet> Sheets;
 		public double AnimSpeed;
 		public bool Animated;
 		protected double Time;
 		protected int FCurrentFrame;
-		protected int FCurrentImage;
+		protected int FCurrentSheet;
 		protected SDL.SDL_Rect SrcRect;
+        protected string Base = "";
 		
-		public int CurrentImage
+		public int CurrentSheet
 		{
-			get { return FCurrentImage;	}
+			get { return FCurrentSheet;	}
 			set
 			{
 				Time = 0;
-				FCurrentImage = value;
+				FCurrentSheet = value;
 				SetAlpha(FAlpha);
 				CurrentFrame = 0;
 			}
@@ -34,8 +36,8 @@ namespace Breeze.Graphics
 			{
 				FCurrentFrame = value;
 				SrcRect = new SDL.SDL_Rect();
-				SrcRect.x = (int)(W * (FCurrentFrame % Images[FCurrentImage].Cols));
-				SrcRect.y = (int)(H * (FCurrentFrame / Images[FCurrentImage].Cols));
+				SrcRect.x = (int)(W * (FCurrentFrame % Sheets[FCurrentSheet].Cols));
+				SrcRect.y = (int)(H * (FCurrentFrame / Sheets[FCurrentSheet].Cols));
 				SrcRect.w = W;
 				SrcRect.h = H;
 			}
@@ -43,10 +45,10 @@ namespace Breeze.Graphics
 		
 		public void Start()
 		{
-			W = Images[0].W;
-			H = Images[0].H;
+			W = Sheets[0].W;
+			H = Sheets[0].H;
 			CalculateRotationCenter(0.5, 0.5);
-			CurrentImage = 0;
+			CurrentSheet = 0;
 			
 			if (Animated)
 				BreezeCore.OnAnimate += Animate;
@@ -54,66 +56,64 @@ namespace Breeze.Graphics
 		
 		protected override void SetAlpha(byte alpha)
 		{
-			SDL.SDL_SetTextureAlphaMod(Images[FCurrentImage].Texture, alpha);
+			SDL.SDL_SetTextureAlphaMod(Sheets[FCurrentSheet].Texture, alpha);
 		}
 
         protected override void SetBlendMode(SDL.SDL_BlendMode mode)
         {
-            SDL.SDL_SetTextureBlendMode(Images[FCurrentImage].Texture, mode);
+            SDL.SDL_SetTextureBlendMode(Sheets[FCurrentSheet].Texture, mode);
         }
 		
 		public Sprite(int zorder = 0) : base(zorder)
 		{
-			Images = new List<Resources.Sprite>();
-			FCurrentImage = 0;
+			Sheets = new List<Resources.SpriteSheet>();
+			FCurrentSheet = 0;
 			AnimSpeed = 1;
 			Animated = false;
 		}
 		
-		public Sprite(string name, int zorder = 0) : this(zorder)
+		public Sprite(string name, int zorder = 0) : this(ResourceManager.Find<SpriteBase>(name).Sheets, zorder)
 		{
-			Images.Add(Resources.Manager.FindSprite(name));
-			Animated = Animated || Images[0].Animated;
-			Start();
+            Base = name;
 		}
 		
-		public Sprite(string[] names, int zorder = 0) : this(zorder)
+		public Sprite(string[] sheets, int zorder = 0) : this(zorder)
 		{
-			if (names.Length == 0)
+			if (sheets.Length == 0)
 				return;
-			for (int i = 0; i < names.Length; i++)
+			for (int i = 0; i < sheets.Length; i++)
             {
-				Images.Add(Resources.Manager.FindSprite(names[i]));
-				Animated = Animated || Images[Images.Count - 1].Animated;
+				Sheets.Add(ResourceManager.Find<SpriteSheet>(sheets[i]));
+				Animated = Animated || Sheets[Sheets.Count - 1].Animated;
 			}
 			Start();
 		}
 
-        public void AddImage(string name)
+        public void AddSheet(string name)
         {
-            Images.Add(Resources.Manager.FindSprite(name));
+            Sheets.Add(ResourceManager.Find<SpriteSheet>(name));
         }
 		
 		protected override void InternalDraw(int x, int y, double angle)
 		{
-            SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Images[FCurrentImage].Texture, ref SrcRect, ref DstRect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
+            SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Sheets[FCurrentSheet].Texture, ref SrcRect, ref DstRect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
 		}
 		
 		protected void Animate(object sender, TimerEventArgs e)
 		{
 			Time += e.Interval * AnimSpeed;
 
-            if (Images[FCurrentImage].Animated == false)
+            if (Sheets[FCurrentSheet].Animated == false)
                 return;
 
-			if (Time >= Images[FCurrentImage].FrameIntervals[FCurrentFrame])
+			if (Time >= Sheets[FCurrentSheet].FrameIntervals[FCurrentFrame])
 			{
 				// Preparing for frame switch
 				FCurrentFrame++;
 				
-				if (FCurrentFrame == Images[FCurrentImage].FrameCount)
+				if (FCurrentFrame == Sheets[FCurrentSheet].FrameCount)
 				{
-					Time -= Images[FCurrentImage].FrameIntervals[FCurrentFrame - 1];
+					Time -= Sheets[FCurrentSheet].FrameIntervals[FCurrentFrame - 1];
 					CurrentFrame = 0;
 				}
 				else  // Performing frame switch
@@ -125,6 +125,19 @@ namespace Breeze.Graphics
         {
             if (Animated)
                 BreezeCore.OnAnimate -= Animate;
+        }
+
+        public override string ToString()
+        {
+            if (Base != "")
+                return Base;
+            else
+            {
+                string tmp = "!";
+                foreach (SpriteSheet spr in Sheets)
+                    tmp += spr.Name + ";";
+                return tmp;
+            }
         }
 	}
 }
