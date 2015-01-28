@@ -65,6 +65,8 @@ namespace Breeze.Resources
 		{
 			foreach (Resource res in Resources.Values)
 				res.Free();
+
+            Resources.Clear();
 		}
 		
 		public static Resource Find(string name)
