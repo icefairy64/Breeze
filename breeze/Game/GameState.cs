@@ -7,40 +7,40 @@ namespace Breeze.Game
 {
     public abstract class GameState
     {
-        protected Dictionary<string, Actor> Actors;
+        protected Dictionary<string, Entity> Entities;
         protected Dictionary<string, int> Counter;
         protected List<BaseAutomation> Automations;
         protected List<IUpdatable> Updatables;
         public GameState Prev;
         protected uint Time = 0;
 
-        public GameState()
+        protected GameState()
         {
-            Actors = new Dictionary<string, Actor>();
+            Entities = new Dictionary<string, Entity>();
             Counter = new Dictionary<string, int>();
             Automations = new List<BaseAutomation>();
             Updatables = new List<IUpdatable>();
         }
 
-        public void AddActor(Actor actor)
+        public void AddEntity(Entity entity)
         {
-            if (!Counter.ContainsKey(actor.Name))
-                Counter.Add(actor.Name, 0);
+            if (!Counter.ContainsKey(entity.Name))
+                Counter.Add(entity.Name, 0);
             
-            Actors.Add(actor.Name + Counter[actor.Name].ToString(), actor);
-            actor.InstanceID = Counter[actor.Name];
-            Counter[actor.Name]++;
+            Entities.Add(entity.Name + Counter[entity.Name].ToString(), entity);
+            entity.InstanceID = Counter[entity.Name];
+            Counter[entity.Name]++;
 
-            if (actor is IUpdatable)
-                AddUpdatable((IUpdatable)actor);
+            if (entity is IUpdatable)
+                AddUpdatable((IUpdatable)entity);
         }
 
-        public void RemoveActor(string instance)
+        public void RemoveEntity(string instance)
         {
-            if (Actors[instance] is IUpdatable)
-                RemoveUpdatable((IUpdatable)Actors[instance]);
+            if (Entities[instance] is IUpdatable)
+                RemoveUpdatable((IUpdatable)Entities[instance]);
 
-            Actors.Remove(instance);
+            Entities.Remove(instance);
         }
 
         public void AddUpdatable(IUpdatable upd)
@@ -101,7 +101,7 @@ namespace Breeze.Game
                                 else
                                     type = attr.Value;
                             }
-                            AddActor(Actor.Build(Type.GetType(type), par));
+                            AddEntity(Entity.Build(Type.GetType(type), par));
                         }
                         break;
                 }

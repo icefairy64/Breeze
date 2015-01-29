@@ -7,7 +7,7 @@ using SDL2;
 
 namespace BreezeTest
 {
-    public class Cornet : Actor, IUpdatable
+    public class Cornet : Actor
     {
         int FDirection;
         int FWalking;
@@ -65,7 +65,7 @@ namespace BreezeTest
         Cornet Player;
         Camera Cam;
 
-        public TestState()
+        public TestState() : base()
         {
             ResourceManager.Load<SpriteBase>("cornet.bs");
             ResourceManager.Load<SpriteSheet>("mothergreen_house0.png");
@@ -81,7 +81,7 @@ namespace BreezeTest
             Screen.FindLayer("back").Insert(back);
 
             Player = new Cornet();
-            AddActor(Player);
+            AddEntity(Player);
 
             Cam = new Camera();
             Cam.Inertia = 0.1;

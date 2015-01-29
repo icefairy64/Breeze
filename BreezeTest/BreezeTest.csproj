@@ -10,6 +10,7 @@
     <RootNamespace>BreezeTest</RootNamespace>
     <AssemblyName>BreezeTest</AssemblyName>
     <StartupObject>BreezeTest.MainClass</StartupObject>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>

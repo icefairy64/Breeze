@@ -34,7 +34,7 @@ namespace Breeze
     {
         public AutomationFinishHandler OnFinish;
     }
-        
+
     public abstract class Automation<T, C> : BaseAutomation
     {
         public bool Loop = false;
@@ -80,7 +80,8 @@ namespace Breeze
         }
 
         protected abstract void CalculateValue(double k);
-        protected abstract void AutomateClient(C client); 
+
+        protected abstract void AutomateClient(C client);
 
         public void Update(object sender, TimerEventArgs e)
         {
@@ -141,7 +142,8 @@ namespace Breeze.Graphics
 {
     public class AlphaAutomation : Automation<byte, Drawable>
     {
-        public AlphaAutomation(byte startVal, bool active = false) : base(startVal, active)
+        public AlphaAutomation(byte startVal, bool active = false)
+            : base(startVal, active)
         {
         }
 

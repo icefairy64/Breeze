@@ -10,6 +10,7 @@
     <RootNamespace>Breeze</RootNamespace>
     <AssemblyName>breeze</AssemblyName>
     <SynchReleaseVersion>false</SynchReleaseVersion>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,11 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -42,9 +48,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BreezeCore.cs" />
     <Compile Include="Automations.cs" />
-    <Compile Include="ActorReflection.cs" />
     <Compile Include="ReflectionHelper.cs" />
-    <Compile Include="Game\Actor.cs" />
     <Compile Include="Graphics\Drawable.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Graphics\Camera.cs" />
@@ -54,6 +58,9 @@
     <Compile Include="Graphics\Screen.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Text.cs" />
+    <Compile Include="Game\Entity.cs" />
+    <Compile Include="Game\EntityReflection.cs" />
+    <Compile Include="Game\Actor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,4 +68,13 @@
     <Folder Include="Graphics\" />
     <Folder Include="Resources\" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
