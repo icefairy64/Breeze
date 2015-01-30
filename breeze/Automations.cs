@@ -37,16 +37,17 @@ namespace Breeze
 
     public abstract class Automation<T, C> : BaseAutomation
     {
-        public bool Loop = false;
-        public double Speed = 1.0;
         protected double Time = 0.0;
         protected List<C> Clients;
         protected List<T> Values;
         protected List<int> Pos;
         protected List<InterpolationMethod> InterpolationMethods;
         protected int CurrentPos = 0;
-        public T CurrentValue;
         protected bool FActive;
+
+        public bool Loop = false;
+        public double Speed = 1.0;
+        public T CurrentValue;
 
         public bool Active
         {
@@ -62,7 +63,7 @@ namespace Breeze
             }
         }
 
-        public Automation(T startValue, bool active = false)
+        protected Automation(T startValue, bool active = false)
         {
             Clients = new List<C>();
             Values = new List<T>();
@@ -109,11 +110,7 @@ namespace Breeze
             }
 
             // Calculating current value and sending it to clients
-            int prevPos;
-            if (CurrentPos == 0)
-                prevPos = 0;
-            else
-                prevPos = Pos[CurrentPos - 1];
+            int prevPos = CurrentPos == 0 ? 0 : Pos[CurrentPos - 1];
 
             CalculateValue((Time - prevPos) / (Pos[CurrentPos] - prevPos));
             foreach (C client in Clients)
@@ -134,27 +131,6 @@ namespace Breeze
         {
             if (FActive)
                 Active = false;
-        }
-    }
-}
-
-namespace Breeze.Graphics
-{
-    public class AlphaAutomation : Automation<byte, Drawable>
-    {
-        public AlphaAutomation(byte startVal, bool active = false)
-            : base(startVal, active)
-        {
-        }
-
-        protected override void CalculateValue(double k)
-        {
-            CurrentValue = (byte)(Values[CurrentPos] + (Values[CurrentPos + 1] - Values[CurrentPos]) * k);
-        }
-
-        protected override void AutomateClient(Drawable client)
-        {
-            client.Alpha = CurrentValue;
         }
     }
 }

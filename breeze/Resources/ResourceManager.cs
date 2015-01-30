@@ -7,12 +7,37 @@ namespace Breeze.Resources
 {
 	public static class ResourceManager
 	{
+        /// <summary>
+        /// Specifies root directory for resources; trailing slash is required
+        /// </summary>
         public static string RootDir = "";
+
+        /// <summary>
+        /// Specifies relative path for sprites; trailing slash is required
+        /// </summary>
         public static string SpritesDir = "";
+
+        /// <summary>
+        /// Specifies relative path for fonts; trailing slash is required
+        /// </summary>
         public static string FontsDir = "";
 		
-		static Dictionary<string, Resource> Resources;
+		private static Dictionary<string, Resource> Resources;
 		
+        public static bool IsLoaded(string filename)
+        {
+            bool result = false;
+
+            foreach (Resource res in Resources.Values)
+            {
+                result |= res.Source.Equals(filename);
+                if (result)
+                    break;
+            }
+
+            return result;
+        }
+
 		public static void Init()
 		{
 			Resources = new Dictionary<string, Resource>();
@@ -50,16 +75,33 @@ namespace Breeze.Resources
 
         public static T Load<T>(string filename) where T : Resource
         {
-            T tmp = (T)Activator.CreateInstance(typeof(T), PathTo<T>() + filename);
-            Resources.Add(typeof(T).Name + ":" + tmp.Name, tmp);
-            return tmp;
+            if (!IsLoaded(PathTo<T>() + filename))
+            {
+                T tmp = (T)Activator.CreateInstance(typeof(T), PathTo<T>() + filename);
+                Resources.Add(typeof(T).Name + ":" + tmp.Name, tmp);
+
+                return tmp;
+            }
+            else
+            {
+                var tmp = new List<Resource>(Resources.Values);
+                return (T)tmp[tmp.FindIndex( (res) => res.Source.Equals(PathTo<T>() + filename) )];
+            }
         }
 		
 		public static void Unload(string name)
 		{
-			Resources[name].Free();
-			Resources.Remove(name);
+            if (Resources.ContainsKey(name))
+            {
+                Resources[name].Free();
+                Resources.Remove(name);
+            }
 		}
+
+        public static void Unload<T>(string name) where T : Resource
+        {
+            Unload(typeof(T).Name + ":" + name);
+        }
 		
 		public static void UnloadAll()
 		{

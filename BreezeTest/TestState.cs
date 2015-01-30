@@ -49,7 +49,7 @@ namespace BreezeTest
             Y = BreezeCore.ScrH / 2 - Image.H;
         }
 
-        public void Update(uint interval)
+        public override void Update(uint interval)
         {
             if (Walking)
             {

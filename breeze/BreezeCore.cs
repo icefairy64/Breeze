@@ -1,5 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+using Breeze.Game;
+using Breeze.Graphics;
+using Breeze.Resources;
 using SDL2;
 
 namespace Breeze
@@ -43,9 +46,14 @@ namespace Breeze
         public static bool Exit = false;
         static int AnimateTimer;
         static int UpdateTimer;
-        static Game.GameState FCurrentState;
+        static GameState FCurrentState;
 
-        public static Game.GameState CurrentState
+        private static void HandleException(Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+        }
+
+        public static GameState CurrentState
         {
             get { return FCurrentState; }
             set
@@ -78,14 +86,13 @@ namespace Breeze
             //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");  // Linear scaling
             SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_VSYNC, "1");
 
-            
             SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
             SDL.SDL_Delay(500); // Giving SDL some time to warm up
             SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
             SDL_ttf.TTF_Init();
 			
-            Resources.ResourceManager.Init();
-            Graphics.Screen.Init();
+            ResourceManager.Init();
+            Screen.Init();
 			
             if (OnInit != null)
                 OnInit();
@@ -99,14 +106,21 @@ namespace Breeze
             UpdateTimer = SDL.SDL_AddTimer(5, UpdateCallback, IntPtr.Zero);
             SDL.SDL_SetRenderDrawBlendMode(Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 			
-            SDL.SDL_Event ev;
-            while (!Exit)
+            try
             {
-                while (SDL.SDL_PollEvent(out ev) == 1)
-                    ProcessEvents(ev);
-                if (OnMainLoop != null)
-                    OnMainLoop();
-                Render();
+                SDL.SDL_Event ev;
+                while (!Exit)
+                {
+                    while (SDL.SDL_PollEvent(out ev) == 1)
+                        ProcessEvents(ev);
+                    if (OnMainLoop != null)
+                        OnMainLoop();
+                    Render();
+                }
+            }
+            catch (Exception e)
+            {
+                HandleException(e);
             }
 			
             SDL.SDL_RemoveTimer(AnimateTimer);
@@ -117,19 +131,35 @@ namespace Breeze
 
         static uint AnimateCallback(uint interval, IntPtr param)
         {
-            TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
-            EventHandler<TimerEventArgs> handler = OnAnimate;
-            if (handler != null)
-                handler(null, arg);
+            try
+            {
+                TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
+                EventHandler<TimerEventArgs> handler = OnAnimate;
+                if (handler != null)
+                    handler(null, arg);
+            }
+            catch (Exception e)
+            {
+                HandleException(e);
+            }
+
             return interval;
         }
 
         static uint UpdateCallback(uint interval, IntPtr param)
         {
-            TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
-            EventHandler<TimerEventArgs> handler = OnUpdate;
-            if (handler != null)
-                handler(null, arg);
+            try
+            {
+                TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
+                EventHandler<TimerEventArgs> handler = OnUpdate;
+                if (handler != null)
+                    handler(null, arg);
+            }
+            catch (Exception e)
+            {
+                HandleException(e);
+            }
+
             return interval;
         }
 
@@ -147,7 +177,7 @@ namespace Breeze
         static void Render()
         {
             SDL.SDL_RenderClear(Renderer);
-            Graphics.Screen.Draw();
+            Screen.Draw();
             if (OnDraw != null)
                 OnDraw(Renderer);
             SDL.SDL_RenderPresent(Renderer);
@@ -155,7 +185,7 @@ namespace Breeze
 
         public static void Finish()
         {
-            Resources.ResourceManager.Free();		
+            ResourceManager.Free();		
             SDL_ttf.TTF_Quit();
             SDL_image.IMG_Quit();
             SDL.SDL_Quit();

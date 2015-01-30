@@ -54,13 +54,17 @@
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\Layer.cs" />
     <Compile Include="Resources\ResourceManager.cs" />
-    <Compile Include="Resources\Resources.cs" />
     <Compile Include="Graphics\Screen.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\Text.cs" />
     <Compile Include="Game\Entity.cs" />
     <Compile Include="Game\EntityReflection.cs" />
     <Compile Include="Game\Actor.cs" />
+    <Compile Include="Graphics\Automations.cs" />
+    <Compile Include="Resources\SpriteSheet.cs" />
+    <Compile Include="Resources\Resource.cs" />
+    <Compile Include="Resources\Font.cs" />
+    <Compile Include="Resources\SpriteBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
