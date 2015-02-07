@@ -95,7 +95,7 @@ namespace Breeze.Graphics
             DstRect.h = (int)(FH * Scale);
         }
 
-		public Drawable(int zorder = 0)
+		protected Drawable(int zorder = 0)
 		{
 			Children = new List<Drawable>();
             DstRect = new SDL.SDL_Rect();
@@ -105,13 +105,15 @@ namespace Breeze.Graphics
 			ZOrder = zorder;
 		}
 		
-		public Drawable(int w, int h, int zorder = 0) : this(zorder)
+		protected Drawable(int w, int h, int zorder = 0)
+            : this(zorder)
 		{
 			W = w;
 			H = h;
 		}
 		
-		public Drawable(int x, int y, int w, int h, int zorder = 0) : this(w, h, zorder)
+		protected Drawable(int x, int y, int w, int h, int zorder = 0)
+            : this(w, h, zorder)
 		{
 			X = x;
 			Y = y;
@@ -154,7 +156,7 @@ namespace Breeze.Graphics
 		protected void CalculateRotationCenter()
 		{
 			RotationCenter.x = (int)(W * RotationCenterX * FScale);
-			RotationCenter.y = (int)(H * RotationCenterX * FScale);
+			RotationCenter.y = (int)(H * RotationCenterY * FScale);
 		}
 		
 		protected void CalculateRotationCenter(double x, double y)

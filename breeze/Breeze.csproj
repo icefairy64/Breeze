@@ -65,6 +65,9 @@
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\Font.cs" />
     <Compile Include="Resources\SpriteBase.cs" />
+    <Compile Include="ChunkCollection.cs" />
+    <Compile Include="Game\EntityChunkCollection.cs" />
+    <Compile Include="Graphics\DrawableChunkCollection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

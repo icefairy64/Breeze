@@ -8,7 +8,7 @@ namespace Breeze.Graphics
 {
 	public class Sprite : Drawable
 	{
-		protected List<Resources.SpriteSheet> Sheets;
+		protected List<SpriteSheet> Sheets;
 		public double AnimSpeed;
 		public bool Animated;
 		protected double Time;
@@ -64,30 +64,35 @@ namespace Breeze.Graphics
             SDL.SDL_SetTextureBlendMode(Sheets[FCurrentSheet].Texture, mode);
         }
 		
-		public Sprite(int zorder = 0) : base(zorder)
+		public Sprite(int zorder = 0) 
+            : base(zorder)
 		{
-			Sheets = new List<Resources.SpriteSheet>();
+			Sheets = new List<SpriteSheet>();
 			FCurrentSheet = 0;
 			AnimSpeed = 1;
 			Animated = false;
 		}
 		
-		public Sprite(string name, int zorder = 0) : this(ResourceManager.Find<SpriteBase>(name).Sheets, zorder)
-		{
-            Base = name;
-		}
-		
-		public Sprite(string[] sheets, int zorder = 0) : this(zorder)
+		public Sprite(string[] sheets, int zorder = 0) 
+            : this(zorder)
 		{
 			if (sheets.Length == 0)
 				return;
+
 			for (int i = 0; i < sheets.Length; i++)
             {
 				Sheets.Add(ResourceManager.Find<SpriteSheet>(sheets[i]));
 				Animated = Animated || Sheets[Sheets.Count - 1].Animated;
 			}
+
 			Start();
 		}
+
+        public Sprite(string baseName, int zorder = 0) 
+            : this(ResourceManager.Find<SpriteBase>(baseName).Sheets, zorder)
+        {
+            Base = baseName;
+        }
 
         public void AddSheet(string name)
         {
