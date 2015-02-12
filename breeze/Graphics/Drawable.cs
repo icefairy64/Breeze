@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using SDL2;
+using SFML;
+using SFML.Graphics;
 
 namespace Breeze.Graphics
 {
@@ -9,13 +11,14 @@ namespace Breeze.Graphics
 		protected int FX, FY, FW, FH;
         
         // Dimension properties
+
         public int X
         {
             get { return FX; }
             set 
             {
+                Transform.Translate(value - FX, 0);
                 FX = value;
-                CalculateDestRect();
             }
         }
         public int Y
@@ -23,31 +26,30 @@ namespace Breeze.Graphics
             get { return FY; }
             set 
             {
+                Transform.Translate(0, value - FY);
                 FY = value;
-                CalculateDestRect();
-            }
-        }
-        public int W
-        {
-            get { return FW; }
-            protected set 
-            {
-                FW = value;
-                CalculateDestRect();
-            }
-        }
-        public int H
-        {
-            get { return FH; }
-            protected set 
-            {
-                FH = value;
-                CalculateDestRect();
             }
         }
 
-		public double Angle;
-		protected byte FAlpha;
+        public float Angle
+        {
+            get { return FAngle; }
+            set
+            {
+                Transform.Rotate(value - FAngle, RotationCenterX, RotationCenterY);
+                FAngle = value;
+            }
+        }
+
+        public float Scale
+        {
+            get { return FScale; }
+            set
+            {
+                Transform.Scale(value / FScale, value / FScale);
+                FScale = value;
+            }
+        }
 
 		public byte Alpha
 		{
@@ -55,52 +57,47 @@ namespace Breeze.Graphics
 			set 
             { 
                 FAlpha = value; 
-                SetAlpha(value); 
+                Color.A = value; 
             }
 		}
 
-		public double FScale;
-		public double RotationCenterX;
-		public double RotationCenterY;
-		public int ZOrder { get; protected set; }
-		protected SDL.SDL_Point RotationCenter;
-		protected List<Drawable> Children;
-        protected SDL.SDL_Rect DstRect;
-        public string Layer;
-        public SDL.SDL_BlendMode BlendMode
+        public BlendMode BlendMode
         {
-            set
-            {
-                SetBlendMode(value);
-            }
+            get { return States.BlendMode; }
+            set { States.BlendMode = value; }
         }
-		
-		public double Scale
-		{
-			get { return FScale; }
-			set 
-            { 
-                FScale = value;
-                CalculateRotationCenter(); 
-            }
-		}
+
+        public Shader Shader
+        {
+            get { return States.Shader; }
+            set { States.Shader = value; }
+        }
+
+		public int ZOrder { get; protected set; }
+        public float RotationCenterX = 0.5f;
+        public float RotationCenterY = 0.5f;
+        public int W;
+        public int H;
+        public Color Color;
+
+		protected List<Drawable> Children;
+        protected Transform Transform;
+        protected RenderStates States;
+        protected float FAngle;
+        protected byte FAlpha;
+        protected float FScale;
+
+        public string Layer;
 
         // Methods
-
-        void CalculateDestRect()
-        {
-            DstRect.x = FX;
-            DstRect.y = FY;
-            DstRect.w = (int)(FW * Scale);
-            DstRect.h = (int)(FH * Scale);
-        }
 
 		protected Drawable(int zorder = 0)
 		{
 			Children = new List<Drawable>();
-            DstRect = new SDL.SDL_Rect();
-			RotationCenter = new SDL.SDL_Point();
-			Scale = 1;
+            Transform = Transform.Identity;
+            States = new RenderStates();
+            Color = new Color(0xff, 0xff, 0xff, 0xff);
+			FScale = 1;
 			FAlpha = 0xff;
 			ZOrder = zorder;
 		}
@@ -119,28 +116,19 @@ namespace Breeze.Graphics
 			Y = y;
 		}
 		
-		protected abstract void SetAlpha(byte alpha);
-        protected abstract void SetBlendMode(SDL.SDL_BlendMode mode);
-		
-		protected abstract void InternalDraw(int x, int y, double angle);
-		
-		public virtual void Draw(int dx, int dy, double dangle)
-		{
-			int rx = X + dx;
-			int ry = Y + dy;
-			double rangle = Angle + dangle;
+        protected abstract void InternalDraw(Transform tf);
 
-            DstRect.x = rx;
-            DstRect.y = ry;
-			InternalDraw(rx, ry, rangle);
+        public virtual void Draw(Transform tf)
+        {
+            InternalDraw(Transform * tf);
 
-			foreach (Drawable dr in Children)
-				dr.Draw(rx, ry, rangle);
-		}
+            foreach (Drawable dr in Children)
+                dr.Draw(Transform * tf);
+        }
 		
-		public void Draw()
+        public virtual void Draw()
 		{
-			Draw(0, 0, 0);
+            Draw(SFML.Graphics.Transform.Identity);
 		}
 		
 		public void AddChild(Drawable dr)
@@ -151,19 +139,6 @@ namespace Breeze.Graphics
 		public void RemoveChild(Drawable dr)
 		{
 			Children.Remove(dr);
-		}
-		
-		protected void CalculateRotationCenter()
-		{
-			RotationCenter.x = (int)(W * RotationCenterX * FScale);
-			RotationCenter.y = (int)(H * RotationCenterY * FScale);
-		}
-		
-		protected void CalculateRotationCenter(double x, double y)
-		{
-			RotationCenterX = x;
-			RotationCenterY = y;
-			CalculateRotationCenter();
 		}
 	}
 }

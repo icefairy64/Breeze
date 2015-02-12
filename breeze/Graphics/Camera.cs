@@ -7,10 +7,10 @@ namespace Breeze.Graphics
 {
     public class Camera : IUpdatable
     {
-        public double X, Y;
-        public double Inertia = 0;
-        public int Radius = BreezeCore.ScrH / 2;
-        protected double RX, RY;
+        public float X, Y;
+        public float Inertia = 0;
+        public int Radius = (int)BreezeCore.ScrH / 2;
+        protected float RX, RY;
 
         public Camera()
         {
@@ -28,8 +28,8 @@ namespace Breeze.Graphics
 
             RX = RX + (X - RX) * (1 - Inertia) * R / Radius;
             RY = RY + (Y - RY) * (1 - Inertia) * R / Radius;
-            Screen.CamX = RX - BreezeCore.ScrW / 2;
-            Screen.CamY = RY - BreezeCore.ScrH / 2;
+            Screen.CamX = RX;
+            Screen.CamY = RY;
         }
     }
 }

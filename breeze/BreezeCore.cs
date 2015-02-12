@@ -3,7 +3,9 @@ using System.Runtime.InteropServices;
 using Breeze.Game;
 using Breeze.Graphics;
 using Breeze.Resources;
-using SDL2;
+using SFML;
+using SFML.Window;
+using SFML.Graphics;
 
 namespace Breeze
 {
@@ -11,11 +13,9 @@ namespace Breeze
     {
         public uint Interval;
     }
-
-    public delegate void SDLEventHandler(SDL.SDL_Event ev);
+        
     public delegate void DrawHandler(IntPtr renderer);
     public delegate void CoreEventHandler();
-    public delegate void KeyInputHandler(SDL.SDL_KeyboardEvent ev);
 
     public interface IUpdatable
     {
@@ -24,28 +24,21 @@ namespace Breeze
 
     public static class BreezeCore
     {
-        public static IntPtr Window;
-        public static IntPtr Renderer;
+        public static RenderWindow Window;
 
-        public static int ScrW { get; private set; }
+        public static uint ScrW { get; private set; }
+        public static uint ScrH { get; private set; }
 
-        public static int ScrH { get; private set; }
-
-        public static SDLEventHandler OnEvent;
         public static DrawHandler OnDraw;
         public static CoreEventHandler OnInit;
         public static CoreEventHandler OnMainLoopStart;
         public static CoreEventHandler OnMainLoop;
         public static CoreEventHandler OnMainLoopFinish;
-        public static KeyInputHandler OnKeyInput;
 
         public static event EventHandler<TimerEventArgs> OnAnimate;
         public static event EventHandler<TimerEventArgs> OnUpdate;
 
-        public static SDL.SDL_Rect ScrRect;
         public static bool Exit = false;
-        static int AnimateTimer;
-        static int UpdateTimer;
         static GameState FCurrentState;
 
         private static void HandleException(Exception e)
@@ -60,36 +53,28 @@ namespace Breeze
             {
                 if (FCurrentState != null)
                 {
+                    Window.KeyPressed -= FCurrentState.HandleKeyPress;
+                    Window.KeyReleased -= FCurrentState.HandleKeyRelease;
                     OnUpdate -= FCurrentState.Update;
                     FCurrentState.Leave();
                 }
                 FCurrentState = value;
 
                 FCurrentState.Enter();
-                OnKeyInput = FCurrentState.KeyInput;
-                OnEvent = FCurrentState.ProcessEvent;
+                Window.KeyPressed += FCurrentState.HandleKeyPress;
+                Window.KeyReleased += FCurrentState.HandleKeyRelease;
                 OnUpdate += FCurrentState.Update;
             }
         }
 
-        public static void Init(string title, int scrw, int scrh)
+        public static void Init(string title, uint scrw, uint scrh)
         {
             ScrW = scrw;
             ScrH = scrh;
-            ScrRect = new SDL.SDL_Rect() { x = 0, y = 0, w = ScrW, h = ScrH };
-			
-            // Initializing SDL subsystems
-            SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_TIMER | SDL.SDL_INIT_GAMECONTROLLER | SDL.SDL_INIT_JOYSTICK);
-            SDL.SDL_Delay(500);
-            
-            // Hints
-            //SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");  // Linear scaling
-            SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_VSYNC, "1");
-
-            SDL.SDL_CreateWindowAndRenderer(scrw, scrh, SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL, out Window, out Renderer);
-            SDL.SDL_Delay(500); // Giving SDL some time to warm up
-            SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_JPG | SDL_image.IMG_InitFlags.IMG_INIT_PNG);
-            SDL_ttf.TTF_Init();
+		
+            Window = new RenderWindow(new VideoMode(scrw, scrh), "Breeze");
+            Window.SetFramerateLimit(60);
+            Window.SetKeyRepeatEnabled(false);
 			
             ResourceManager.Init();
             Screen.Init();
@@ -102,29 +87,39 @@ namespace Breeze
         {
             if (OnMainLoopStart != null)
                 OnMainLoopStart();
-            AnimateTimer = SDL.SDL_AddTimer(5, AnimateCallback, IntPtr.Zero);
-            UpdateTimer = SDL.SDL_AddTimer(5, UpdateCallback, IntPtr.Zero);
-            SDL.SDL_SetRenderDrawBlendMode(Renderer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
-			
+
+            DateTime before;
+            DateTime after = DateTime.Now;
+            uint dt = 0;
+
             try
             {
-                SDL.SDL_Event ev;
                 while (!Exit)
                 {
-                    while (SDL.SDL_PollEvent(out ev) == 1)
-                        ProcessEvents(ev);
+                    before = after;
+
+                    Window.DispatchEvents();
+
                     if (OnMainLoop != null)
-                        OnMainLoop();
+                        OnMainLoop(); 
+
+                    UpdateCallback(dt, IntPtr.Zero);
+                    AnimateCallback(dt, IntPtr.Zero);
+
                     Render();
+
+                    after = DateTime.Now;
+                    //dt = (uint)after.Subtract(before).Milliseconds;
+                    dt = 16;
+
+                    Console.WriteLine(dt);
                 }
             }
             catch (Exception e)
             {
                 HandleException(e);
             }
-			
-            SDL.SDL_RemoveTimer(AnimateTimer);
-            SDL.SDL_RemoveTimer(UpdateTimer);
+
             if (OnMainLoopFinish != null)
                 OnMainLoopFinish();
         }
@@ -161,34 +156,21 @@ namespace Breeze
             }
 
             return interval;
-        }
-
-        static void ProcessEvents(SDL.SDL_Event ev)
-        {
-            if ((ev.type == SDL.SDL_EventType.SDL_KEYDOWN) || (ev.type == SDL.SDL_EventType.SDL_KEYUP))
-            {
-                if (OnKeyInput != null)
-                    OnKeyInput(ev.key);
-                return;
-            }
-            OnEvent(ev);
-        }
+        }       
 
         static void Render()
         {
-            SDL.SDL_RenderClear(Renderer);
+            Window.Clear();
             Screen.Draw();
-            if (OnDraw != null)
-                OnDraw(Renderer);
-            SDL.SDL_RenderPresent(Renderer);
+            Window.Display();
+
+            //if (OnDraw != null)
+            //    OnDraw(Renderer);
         }
 
         public static void Finish()
         {
-            ResourceManager.Free();		
-            SDL_ttf.TTF_Quit();
-            SDL_image.IMG_Quit();
-            SDL.SDL_Quit();
+            ResourceManager.Free();
         }
     }
 }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Xml;
 using System.IO;
 using SDL2;
+using SFML.Graphics;
 
 namespace Breeze.Resources
 {
     public class SpriteSheet : Resource
     {
-        public IntPtr Texture;
+        public Texture Texture;
         public int[] FrameIntervals;
         public uint FrameCount;
         public uint Cols;
@@ -30,8 +31,11 @@ namespace Breeze.Resources
             if (!filename.EndsWith("bspr"))
             {
                 // Loading plain 1-frame sprite
-                Texture = SDL_image.IMG_LoadTexture(BreezeCore.Renderer, filename);
-                SDL.SDL_QueryTexture(Texture, out format, out access, out W, out H);
+                Texture = new Texture(filename); 
+
+                W = (int)Texture.Size.X;
+                H = (int)Texture.Size.Y;
+
                 FrameCount = 1;
             }
             else
@@ -58,10 +62,9 @@ namespace Breeze.Resources
                                 Rows = uint.Parse(el.GetAttribute("rows"));
                             if (el.HasAttribute("animated"))
                                 Animated = el.GetAttribute("animated") == "1" ? true : false;
-                            Texture = SDL_image.IMG_LoadTexture(BreezeCore.Renderer, dir + el.InnerText);
-                            SDL.SDL_QueryTexture(Texture, out format, out access, out W, out H);
-                            W /= (int)Cols;
-                            H /= (int)Rows;
+                            Texture = new Texture(dir + el.InnerText);
+                            W = (int)(Texture.Size.X / Cols);
+                            W = (int)(Texture.Size.Y / Rows);
                             break;
 
                         case "frames":
@@ -86,11 +89,11 @@ namespace Breeze.Resources
 
         public override void Free()
         {
-            if (Texture == IntPtr.Zero)
+            if (Texture == null)
                 return;  
-            Console.WriteLine("Freeing texture: {0:x16}", Texture.ToInt64());
-            SDL.SDL_DestroyTexture(Texture);
-            Texture = IntPtr.Zero;
+            Console.WriteLine("Freeing texture: {0:x16}", Texture.CPointer.ToInt64());
+            Texture.Dispose();
+            Texture = null;
         }
 
         ~SpriteSheet()

@@ -3,7 +3,7 @@ using Breeze;
 using Breeze.Game;
 using Breeze.Graphics;
 using Breeze.Resources;
-using SDL2;
+using SFML.Window;
 
 namespace BreezeTest
 {
@@ -43,7 +43,7 @@ namespace BreezeTest
             Name = "cornet";
             //Image = new Sprite(new string[]{ "cornet_stand0", "cornet_stand1", "cornet_stand2", "cornet_stand3", "cornet_walk0", "cornet_walk1", "cornet_walk2", "cornet_walk3" });
             Image = new Sprite("cornet");
-            Image.Scale = 2;
+            //Image.Scale = 2;
             Screen.FindLayer("front").Insert(Image);
             X = BreezeCore.ScrW / 2 - Image.W;
             Y = BreezeCore.ScrH / 2 - Image.H;
@@ -69,32 +69,35 @@ namespace BreezeTest
         {
             ResourceManager.Load<SpriteBase>("cornet.bs");
             ResourceManager.Load<SpriteSheet>("mothergreen_house0.png");
-            ResourceManager.Load<Font>("hammersmithone.ttf:24");
+            ResourceManager.Load<Font>("hammersmithone.ttf");
 
-            Screen.CreateLayer("front", 1);
-            Screen.CreateLayer("back", 0);
+            Screen.CreateLayer("front", 1, false);
+            Screen.CreateLayer("back", 0, false);
 
             Sprite back = new Sprite(new string[]{ "mothergreen_house0" });
-            back.Scale = 2;
-            back.X = BreezeCore.ScrW / 2 - back.W;
-            back.Y = BreezeCore.ScrH / 2 - back.H;
+            //back.Scale = 2;
+            back.X = (int)BreezeCore.ScrW / 2 - back.W;
+            back.Y = (int)BreezeCore.ScrH / 2 - back.H;
             Screen.FindLayer("back").Insert(back);
+
+            //Screen.FindLayer("back").Zoom = 4f;
+            //Screen.FindLayer("front").Zoom = 4f;
 
             Player = new Cornet();
             AddEntity(Player);
 
             Cam = new Camera();
-            Cam.Inertia = 0.1;
-            Cam.Radius = BreezeCore.ScrH / 2 - 20;
+            Cam.Inertia = 0.1f;
+            Cam.Radius = (int)BreezeCore.ScrW / 2;
             AddUpdatable(Cam);
         }
 
         public override void Enter()
         {
-            AlphaAutomation auto = new AlphaAutomation(0);
-            auto.AddPoint(1500, 0xff, InterpolationMethod.Linear);
-            AddAutomation(auto);
-            auto.AttachClient(Screen.FindLayer("front"));
+            //AlphaAutomation auto = new AlphaAutomation(0);
+            //auto.AddPoint(1500, 0xff, InterpolationMethod.Linear);
+            //AddAutomation(auto);
+            //auto.AttachClient(Screen.FindLayer("front"));
             //auto.Active = true;
         }
 
@@ -103,7 +106,7 @@ namespace BreezeTest
             
         }
 
-        public override void ProcessEvent(SDL.SDL_Event ev)
+        public override void ProcessEvent(object sender, EventArgs e)
         {
             //Console.WriteLine(ev.type);
         }
@@ -118,28 +121,24 @@ namespace BreezeTest
             if (newstate)
                 Player.Direction = index;
         }
-
-        public override void KeyInput(SDL.SDL_KeyboardEvent ev)
+            
+        protected void HandleKeyInput(KeyEventArgs e, bool newstate)
         {
-            if (ev.repeat == 1)
-                return;
-
-            bool newstate = ev.state == 1;
-            switch (ev.keysym.sym)
+            switch (e.Code)
             {
-                case SDL.SDL_Keycode.SDLK_UP:
+                case Keyboard.Key.Up:
                     SetKeyState(0, newstate);
                     break;
-                case SDL.SDL_Keycode.SDLK_RIGHT:
+                case Keyboard.Key.Right:
                     SetKeyState(1, newstate);
                     break;
-                case SDL.SDL_Keycode.SDLK_DOWN:
+                case Keyboard.Key.Down:
                     SetKeyState(2, newstate);
                     break;
-                case SDL.SDL_Keycode.SDLK_LEFT:
+                case Keyboard.Key.Left:
                     SetKeyState(3, newstate);
                     break;
-                case SDL.SDL_Keycode.SDLK_ESCAPE:
+                case Keyboard.Key.Escape:
                     BreezeCore.Exit = true;
                     break;
             }
@@ -152,17 +151,27 @@ namespace BreezeTest
                 if (KeyState[i])
                     dir = i;
             }
-            
+
             Player.Walking = walking;
             if (!newstate)
                 Player.Direction = dir;
         }
 
+        public override void HandleKeyPress(object sender, KeyEventArgs e)
+        {
+            HandleKeyInput(e, true);
+        }
+
+        public override void HandleKeyRelease(object sender, KeyEventArgs e)
+        {
+            HandleKeyInput(e, false);
+        }
+
         public override void Update(object sender, TimerEventArgs e)
         {
             base.Update(sender, e);
-            Cam.X = Player.X + Player.Image.W / 2;
-            Cam.Y = Player.Y + Player.Image.H / 2;
+            Cam.X = (float)(Player.X + Player.Image.W / 2);
+            Cam.Y = (float)(Player.Y + Player.Image.H / 2);
         }
 
         ~TestState()

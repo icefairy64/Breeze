@@ -1,21 +1,23 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
-using SDL2;
 using Breeze.Resources;
+using SFML.Graphics;
 
 namespace Breeze.Graphics
 {
 	public class Sprite : Drawable
 	{
-		protected List<SpriteSheet> Sheets;
 		public double AnimSpeed;
 		public bool Animated;
+
 		protected double Time;
 		protected int FCurrentFrame;
 		protected int FCurrentSheet;
-		protected SDL.SDL_Rect SrcRect;
+        protected IntRect SrcRect;
         protected string Base = "";
+        protected List<SpriteSheet> Sheets;
+        protected SFML.Graphics.Sprite Spr;
 		
 		public int CurrentSheet
 		{
@@ -24,7 +26,6 @@ namespace Breeze.Graphics
 			{
 				Time = 0;
 				FCurrentSheet = value;
-				SetAlpha(FAlpha);
 				CurrentFrame = 0;
 			}
 		}
@@ -35,11 +36,10 @@ namespace Breeze.Graphics
 			set
 			{
 				FCurrentFrame = value;
-				SrcRect = new SDL.SDL_Rect();
-				SrcRect.x = (int)(W * (FCurrentFrame % Sheets[FCurrentSheet].Cols));
-				SrcRect.y = (int)(H * (FCurrentFrame / Sheets[FCurrentSheet].Cols));
-				SrcRect.w = W;
-				SrcRect.h = H;
+                SrcRect.Left = (int)(W * (FCurrentFrame % Sheets[FCurrentSheet].Cols));
+                SrcRect.Top = (int)(H * (FCurrentFrame / Sheets[FCurrentSheet].Cols));
+                SrcRect.Width = W;
+                SrcRect.Height = H;
 			}
 		}
 		
@@ -47,27 +47,18 @@ namespace Breeze.Graphics
 		{
 			W = Sheets[0].W;
 			H = Sheets[0].H;
-			CalculateRotationCenter(0.5, 0.5);
 			CurrentSheet = 0;
 			
 			if (Animated)
 				BreezeCore.OnAnimate += Animate;
 		}
 		
-		protected override void SetAlpha(byte alpha)
-		{
-			SDL.SDL_SetTextureAlphaMod(Sheets[FCurrentSheet].Texture, alpha);
-		}
-
-        protected override void SetBlendMode(SDL.SDL_BlendMode mode)
-        {
-            SDL.SDL_SetTextureBlendMode(Sheets[FCurrentSheet].Texture, mode);
-        }
-		
 		public Sprite(int zorder = 0) 
             : base(zorder)
 		{
 			Sheets = new List<SpriteSheet>();
+            Spr = new SFML.Graphics.Sprite();
+            SrcRect = new IntRect();
 			FCurrentSheet = 0;
 			AnimSpeed = 1;
 			Animated = false;
@@ -98,11 +89,15 @@ namespace Breeze.Graphics
         {
             Sheets.Add(ResourceManager.Find<SpriteSheet>(name));
         }
-		
-		protected override void InternalDraw(int x, int y, double angle)
-		{
-            SDL.SDL_RenderCopyEx(BreezeCore.Renderer, Sheets[FCurrentSheet].Texture, ref SrcRect, ref DstRect, angle, ref RotationCenter, SDL.SDL_RendererFlip.SDL_FLIP_NONE);
-		}
+
+        protected override void InternalDraw(Transform tf)
+        {
+            States.Transform = tf;
+            Spr.Texture = Sheets[FCurrentSheet].Texture;
+            Spr.TextureRect = SrcRect;
+            Spr.Color = Color;
+            Screen.CurrentTarget.Draw(Spr, States);
+        }
 		
 		protected void Animate(object sender, TimerEventArgs e)
 		{

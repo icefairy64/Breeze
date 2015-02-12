@@ -1,81 +1,76 @@
 using System;
 using System.Collections.Generic;
-using SDL2;
+using SFML.Graphics;
 
 namespace Breeze.Graphics
 {
 	public class Layer : Drawable
 	{
-		protected IntPtr Buffer;
-		protected SDL.SDL_Rect SrcRect;
+        protected RenderTexture Buffer;
+        protected FloatRect SrcRect;
         protected DrawableChunkCollection Chunks;
         protected int ChunksInRow;
         protected int ChunksInColumn;
         protected int ChunkValidateCounter = 0;
         protected int OuterRenderRadius = 2;
+        protected float FZoom = 1f;
 
+        public View View;
 		public string Name { get; protected set; }
         public bool Chunked { get; protected set; }
-        public double ScrollSpeed = 1.0;
+        public float ScrollSpeed = 1.0f;
 		
+        public float Zoom 
+        {
+            get { return FZoom; }
+            set
+            {
+                View.Zoom(FZoom/value);
+                FZoom = value;
+            }
+        }
+
         public Layer(string name, int zorder = 0, bool chunked = true)
 		{
-			Buffer = SDL.SDL_CreateTexture(BreezeCore.Renderer, 
-                                           SDL.SDL_GetWindowPixelFormat(BreezeCore.Window), 
-			                               (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET, 
-			                               BreezeCore.ScrW, 
-			                               BreezeCore.ScrH);
-			SDL.SDL_SetTextureBlendMode(Buffer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
-
-			SrcRect = new SDL.SDL_Rect() { x = 0, y = 0, w = BreezeCore.ScrW, h = BreezeCore.ScrH };    // Use BreezeCore.ScrRect instead?
+            Buffer = new RenderTexture(BreezeCore.ScrW, BreezeCore.ScrH);
+            View = new View(new FloatRect(0, 0, BreezeCore.ScrW, BreezeCore.ScrH));
+            SrcRect = new FloatRect(0, 0, BreezeCore.ScrW, BreezeCore.ScrH);
 
             if (chunked)
-            {
                 Chunks = new DrawableChunkCollection(256);
-                ChunksInRow = SrcRect.w / 256;
-                ChunksInColumn = SrcRect.h / 256;
-            }
 
             Chunked = chunked;
 			Name = name;
             ZOrder = zorder;
 		}
 		
-		protected override void SetAlpha(byte alpha)
-		{
-            //SDL.SDL_SetTextureBlendMode(Buffer, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
-            SDL.SDL_SetTextureAlphaMod(Buffer, alpha);
-		}
-
-        protected override void SetBlendMode(SDL.SDL_BlendMode mode)
-        {
-            SDL.SDL_SetTextureBlendMode(Buffer, mode);
-        }
-		
-		protected override void InternalDraw(int x, int y, double angle)
+        protected override void InternalDraw(Transform tf)
 		{
             // Do nothing
 		}
 		
-		public override void Draw(int dx, int dy, double dangle)
+        public override void Draw()
 		{
-			SDL.SDL_SetRenderTarget(BreezeCore.Renderer, Buffer);
-			SDL.SDL_RenderClear(BreezeCore.Renderer);
-            SDL.SDL_SetTextureAlphaMod(Buffer, 0xff);
+            Screen.CurrentTarget = Buffer;
+            Buffer.Clear(Color.Transparent);
+            Buffer.SetView(View);
 			
             if (!Chunked)
-                base.Draw(dx, dy, dangle);
+                base.Draw();
             else
             {
-                int rx = X + dx;
-                int ry = Y + dy;
-                double rangle = Angle + dangle;
+                // TODO Add rotation
+                int rx = (int)(View.Center.X - (View.Size.X / 2));
+                int ry = (int)(View.Center.Y - (View.Size.Y / 2));
+                ChunksInRow = (int)View.Size.X / 256;
+                ChunksInColumn = (int)View.Size.Y / 256;
 
-                DstRect.x = rx;
-                DstRect.y = ry;
+                //double rangle = Angle + dangle;
+                //DstRect.x = rx;
+                //DstRect.y = ry;
                 //InternalDraw(rx, ry, rangle);
-
                 //Console.WriteLine(ChunkValidateCounter);
+
                 Chunks.ValidateChunkAt(
                     ((ChunkValidateCounter) / (ChunksInRow + OuterRenderRadius)) * Chunks.ChunkSize - rx, 
                     ((ChunkValidateCounter) % (ChunksInRow + OuterRenderRadius)) * Chunks.ChunkSize - ry);
@@ -92,7 +87,7 @@ namespace Breeze.Graphics
                         if (chunk != null)
                         {
                             foreach (Drawable dr in chunk)
-                                dr.Draw(rx, ry, rangle);
+                                dr.Draw();
                         }
                     }
             }
@@ -100,9 +95,10 @@ namespace Breeze.Graphics
             //foreach (Drawable dr in Children)
             //    dr.Draw(rx, ry, rangle);
 
-            SDL.SDL_SetRenderTarget(BreezeCore.Renderer, Screen.Buffer);
-            SDL.SDL_SetTextureAlphaMod(Buffer, FAlpha);
-            SDL.SDL_RenderCopy(BreezeCore.Renderer, Buffer, ref SrcRect, ref SrcRect);
+            Buffer.Display();
+            Screen.CurrentTarget = Screen.Buffer;
+            // TODO Optimize!
+            Screen.Buffer.Draw(new SFML.Graphics.Sprite(Buffer.Texture));
 		}
 		
 		public void Insert(Drawable dr)
@@ -112,8 +108,15 @@ namespace Breeze.Graphics
             dr.Layer = Name;
 
 			Children.Insert(index, dr);
-            Chunks.InsertAt(dr, dr.X, dr.Y);
+
+            if (Chunked)
+                Chunks.InsertAt(dr, dr.X, dr.Y);
 		}
+
+        ~Layer()
+        {
+            Buffer.Dispose();
+        }
 	}
 }
 

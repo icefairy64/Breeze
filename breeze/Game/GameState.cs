@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using SDL2;
+using SFML.Window;
 
 namespace Breeze.Game
 {
@@ -110,8 +110,9 @@ namespace Breeze.Game
 
         public abstract void Enter();
         public abstract void Leave();
-        public abstract void KeyInput(SDL.SDL_KeyboardEvent ev);
-        public abstract void ProcessEvent(SDL.SDL_Event ev);
+        public abstract void HandleKeyPress(object sender, KeyEventArgs e);
+        public abstract void HandleKeyRelease(object sender, KeyEventArgs e);
+        public abstract void ProcessEvent(object sender, EventArgs e);
     }
 }
 

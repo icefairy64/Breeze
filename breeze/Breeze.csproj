@@ -43,6 +43,15 @@
       <HintPath>..\3rdparty\SDL2-CS.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="sfmlnet-audio-2">
+      <HintPath>..\3rdparty\sfmlnet-audio-2.dll</HintPath>
+    </Reference>
+    <Reference Include="sfmlnet-graphics-2">
+      <HintPath>..\3rdparty\sfmlnet-graphics-2.dll</HintPath>
+    </Reference>
+    <Reference Include="sfmlnet-window-2">
+      <HintPath>..\3rdparty\sfmlnet-window-2.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
