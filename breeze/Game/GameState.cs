@@ -61,7 +61,7 @@ namespace Breeze.Game
         public void AddAutomation(BaseAutomation automation)
         {
             Automations.Add(automation);
-            ((BaseAutomation)automation).OnFinish = OnAutomationFinish;
+            automation.OnFinish = OnAutomationFinish;
         }
 
         public void RemoveAutomation(BaseAutomation automation)
@@ -88,8 +88,8 @@ namespace Breeze.Game
                 XmlElement el = (XmlElement)ch;
                 switch (el.Name)
                 {
-                    case "actors":
-                        // Spawning actors
+                    case "entity":
+                        // Spawning entities
                         foreach (XmlNode anode in el.ChildNodes)
                         {
                             BuildParams par = new BuildParams();

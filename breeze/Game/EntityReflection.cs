@@ -12,7 +12,7 @@ namespace Breeze.Game
         /// <param name="par">Parameters to set</param>
         public static Entity Build(Type type, BuildParams par)
         {
-            if (type.IsSubclassOf(typeof(Entity)) == false)
+            if (!type.IsSubclassOf(typeof(Entity)))
                 throw new ReflectionException("Passed an non-entity type to the Entity.Build method");
             Entity tmp = (Entity)Activator.CreateInstance(type);
             foreach (KeyValuePair<String, object> pair in par)

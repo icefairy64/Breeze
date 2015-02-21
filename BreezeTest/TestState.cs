@@ -43,7 +43,7 @@ namespace BreezeTest
             Name = "cornet";
             //Image = new Sprite(new string[]{ "cornet_stand0", "cornet_stand1", "cornet_stand2", "cornet_stand3", "cornet_walk0", "cornet_walk1", "cornet_walk2", "cornet_walk3" });
             Image = new Sprite("cornet");
-            //Image.Scale = 2;
+            Image.Scale = 2;
             Screen.FindLayer("front").Insert(Image);
             X = BreezeCore.ScrW / 2 - Image.W;
             Y = BreezeCore.ScrH / 2 - Image.H;
@@ -71,11 +71,11 @@ namespace BreezeTest
             ResourceManager.Load<SpriteSheet>("mothergreen_house0.png");
             ResourceManager.Load<Font>("hammersmithone.ttf");
 
-            Screen.CreateLayer("front", 1, false);
+            Screen.CreateLayer("front", 1);
             Screen.CreateLayer("back", 0, false);
 
             Sprite back = new Sprite(new string[]{ "mothergreen_house0" });
-            //back.Scale = 2;
+            back.Scale = 2;
             back.X = (int)BreezeCore.ScrW / 2 - back.W;
             back.Y = (int)BreezeCore.ScrH / 2 - back.H;
             Screen.FindLayer("back").Insert(back);
@@ -140,6 +140,14 @@ namespace BreezeTest
                     break;
                 case Keyboard.Key.Escape:
                     BreezeCore.Exit = true;
+                    break;
+                case Keyboard.Key.Z:
+                    if (newstate)
+                        Screen.FindLayer("front").Alpha ^= 0xff;
+                    break;
+                case Keyboard.Key.X:
+                    if (newstate)
+                        Screen.FindLayer("back").Alpha ^= 0xff;
                     break;
             }
 

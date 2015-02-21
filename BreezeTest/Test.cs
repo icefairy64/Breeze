@@ -3,7 +3,6 @@ using System.IO;
 using Breeze;
 using Breeze.Graphics;
 using Breeze.Resources;
-using SDL2;
 
 namespace BreezeTest
 {

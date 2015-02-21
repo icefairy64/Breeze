@@ -1,7 +1,6 @@
 ﻿using System;
 using Breeze;
 using Breeze.Graphics;
-using SDL2;
 
 namespace Breeze.Graphics
 {

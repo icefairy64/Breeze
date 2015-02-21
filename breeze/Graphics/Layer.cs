@@ -14,6 +14,9 @@ namespace Breeze.Graphics
         protected int ChunkValidateCounter = 0;
         protected int OuterRenderRadius = 2;
         protected float FZoom = 1f;
+        protected RectangleShape ClearRect;
+        protected RenderStates ClearStates;
+        protected SFML.Graphics.Sprite Spr;
 
         public View View;
 		public string Name { get; protected set; }
@@ -25,16 +28,26 @@ namespace Breeze.Graphics
             get { return FZoom; }
             set
             {
-                View.Zoom(FZoom/value);
+                View.Zoom(FZoom / value);
                 FZoom = value;
             }
         }
 
         public Layer(string name, int zorder = 0, bool chunked = true)
+            : base(0, 0, (int)BreezeCore.ScrW, (int)BreezeCore.ScrH, zorder)
 		{
-            Buffer = new RenderTexture(BreezeCore.ScrW, BreezeCore.ScrH);
-            View = new View(new FloatRect(0, 0, BreezeCore.ScrW, BreezeCore.ScrH));
-            SrcRect = new FloatRect(0, 0, BreezeCore.ScrW, BreezeCore.ScrH);
+            Buffer = new RenderTexture((uint)FW, (uint)FH);
+            View = new View(new FloatRect(0, 0, FW, FH));
+            SrcRect = new FloatRect(0, 0, FW, FH);
+            Spr = new SFML.Graphics.Sprite(Buffer.Texture);
+            ClearRect = new RectangleShape(new SFML.Window.Vector2f(FW, FH));
+            ClearStates = new RenderStates();
+
+            ClearRect.FillColor = new Color(0, 0, 0, 0xff);
+            ClearStates.BlendMode = BlendMode.None;
+            States.BlendMode = BlendMode.Alpha;
+            States.Transform = Transform.Identity;
+            Spr.Color = Color;
 
             if (chunked)
                 Chunks = new DrawableChunkCollection(256);
@@ -53,7 +66,9 @@ namespace Breeze.Graphics
 		{
             Screen.CurrentTarget = Buffer;
             Buffer.Clear(Color.Transparent);
+            //ClearRect.Draw(Buffer, ClearStates);
             Buffer.SetView(View);
+            Spr.Color = Color;
 			
             if (!Chunked)
                 base.Draw();
@@ -69,11 +84,11 @@ namespace Breeze.Graphics
                 //DstRect.x = rx;
                 //DstRect.y = ry;
                 //InternalDraw(rx, ry, rangle);
-                //Console.WriteLine(ChunkValidateCounter);
+                //Console.WriteLine("{0} {1} {2}", ChunkValidateCounter, rx, ry);
 
                 Chunks.ValidateChunkAt(
-                    ((ChunkValidateCounter) / (ChunksInRow + OuterRenderRadius)) * Chunks.ChunkSize - rx, 
-                    ((ChunkValidateCounter) % (ChunksInRow + OuterRenderRadius)) * Chunks.ChunkSize - ry);
+                    ((ChunkValidateCounter) / (ChunksInRow + OuterRenderRadius)) * Chunks.ChunkSize + rx, 
+                    ((ChunkValidateCounter) % (ChunksInRow + OuterRenderRadius)) * Chunks.ChunkSize + ry);
 
                 ChunkValidateCounter++;
                 if (ChunkValidateCounter == (ChunksInRow + OuterRenderRadius) * (ChunksInColumn + OuterRenderRadius))
@@ -82,7 +97,7 @@ namespace Breeze.Graphics
                 for (int x = -OuterRenderRadius; x <= ChunksInRow + OuterRenderRadius; x++)
                     for (int y = -OuterRenderRadius; y <= ChunksInColumn + OuterRenderRadius; y++)
                     {
-                        var chunk = Chunks.GetChunkAt(x * Chunks.ChunkSize - rx, y * Chunks.ChunkSize - ry);
+                        var chunk = Chunks.GetChunkAt(x * Chunks.ChunkSize + rx, y * Chunks.ChunkSize + ry);
 
                         if (chunk != null)
                         {
@@ -97,8 +112,7 @@ namespace Breeze.Graphics
 
             Buffer.Display();
             Screen.CurrentTarget = Screen.Buffer;
-            // TODO Optimize!
-            Screen.Buffer.Draw(new SFML.Graphics.Sprite(Buffer.Texture));
+            Screen.Buffer.Draw(Spr, States);
 		}
 		
 		public void Insert(Drawable dr)

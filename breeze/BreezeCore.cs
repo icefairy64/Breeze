@@ -72,7 +72,8 @@ namespace Breeze
             ScrW = scrw;
             ScrH = scrh;
 		
-            Window = new RenderWindow(new VideoMode(scrw, scrh), "Breeze");
+            Window = new RenderWindow(new VideoMode(scrw, scrh), title);
+            Window.SetVerticalSyncEnabled(false);
             Window.SetFramerateLimit(60);
             Window.SetKeyRepeatEnabled(false);
 			
@@ -111,8 +112,6 @@ namespace Breeze
                     after = DateTime.Now;
                     //dt = (uint)after.Subtract(before).Milliseconds;
                     dt = 16;
-
-                    Console.WriteLine(dt);
                 }
             }
             catch (Exception e)

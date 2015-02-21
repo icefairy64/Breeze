@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SDL2;
 using SFML;
 using SFML.Graphics;
 
@@ -17,7 +16,7 @@ namespace Breeze.Graphics
             get { return FX; }
             set 
             {
-                Transform.Translate(value - FX, 0);
+                Transform.Translate((value - FX) / FScale, 0);
                 FX = value;
             }
         }
@@ -26,9 +25,21 @@ namespace Breeze.Graphics
             get { return FY; }
             set 
             {
-                Transform.Translate(0, value - FY);
+                Transform.Translate(0, (value - FY) / FScale);
                 FY = value;
             }
+        }
+
+        public int W
+        {
+            get { return FW; }
+            set { FW = value; }
+        }
+
+        public int H
+        {
+            get { return FH; }
+            set { FH = value; }
         }
 
         public float Angle
@@ -76,8 +87,6 @@ namespace Breeze.Graphics
 		public int ZOrder { get; protected set; }
         public float RotationCenterX = 0.5f;
         public float RotationCenterY = 0.5f;
-        public int W;
-        public int H;
         public Color Color;
 
 		protected List<Drawable> Children;
