@@ -34,17 +34,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="SDL2-CS">
-      <HintPath>..\3rdparty\SDL2-CS.dll</HintPath>
-    </Reference>
     <Reference Include="sfmlnet-audio-2">
-      <HintPath>..\3rdparty\sfmlnet-audio-2.dll</HintPath>
+      <HintPath>..\..\3rdparty\sfmlnet-audio-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-graphics-2">
-      <HintPath>..\3rdparty\sfmlnet-graphics-2.dll</HintPath>
+      <HintPath>..\..\3rdparty\sfmlnet-graphics-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-window-2">
-      <HintPath>..\3rdparty\sfmlnet-window-2.dll</HintPath>
+      <HintPath>..\..\3rdparty\sfmlnet-window-2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -54,7 +51,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\breeze\Breeze.csproj">
+    <ProjectReference Include="..\..\Breeze\Breeze.csproj">
       <Project>{9F6F8583-BFAA-4653-BC25-311F28387C97}</Project>
       <Name>Breeze</Name>
     </ProjectReference>
