@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Breeze", "breeze\Breeze.csproj", "{9F6F8583-BFAA-4653-BC25-311F28387C97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Breeze", "Breeze\Breeze.csproj", "{9F6F8583-BFAA-4653-BC25-311F28387C97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreezeTest", "BreezeTest\BreezeTest.csproj", "{831C2D14-F2A7-4FA3-B538-6579518A9EBB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C1A9DEF0-405C-40D8-98C1-385302ABFEDD}"
+	ProjectSection(MonoDevelopProperties) = preProject
+		BaseDirectory = Demos
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneralDemo", "Demos\GeneralDemo\GeneralDemo.csproj", "{831C2D14-F2A7-4FA3-B538-6579518A9EBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +24,9 @@ Global
 		{9F6F8583-BFAA-4653-BC25-311F28387C97}.Debug|x86.Build.0 = Debug|x86
 		{9F6F8583-BFAA-4653-BC25-311F28387C97}.Release|x86.ActiveCfg = Release|x86
 		{9F6F8583-BFAA-4653-BC25-311F28387C97}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{831C2D14-F2A7-4FA3-B538-6579518A9EBB} = {C1A9DEF0-405C-40D8-98C1-385302ABFEDD}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
