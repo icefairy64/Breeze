@@ -6,9 +6,12 @@ using SFML.Graphics;
 
 namespace Breeze.Resources
 {
+    [Serializable]
     public class SpriteSheet : Resource
     {
+        [NonSerialized]
         public Texture Texture;
+
         public int[] FrameIntervals;
         public uint FrameCount;
         public uint Cols;
@@ -23,8 +26,6 @@ namespace Breeze.Resources
             Animated = false;
             Cols = 1;
             Rows = 1;
-            uint format;
-            int access;
             string dir = filename.Remove(filename.Length - Path.GetFileName(filename).Length);
 
             if (!filename.EndsWith("bspr"))

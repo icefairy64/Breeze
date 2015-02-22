@@ -1,23 +1,48 @@
 ﻿using System;
+using Breeze.Graphics;
 
 namespace Breeze.Game
 {
-    public class Saveable : Attribute
-    {
-    }
-
+    [Serializable]
     public partial class Entity
     {
-        public Graphics.Drawable Image;
-        public string Name;
-        public int InstanceID;
+        [Editable]
+        public Drawable Image;
+       
+        public string CommonName;
+
+        protected int FInstanceID;
         protected double FX, FY;
+        protected string FName;
+
+        [Editable]
+        public string Name
+        {
+            get { return FName; }
+            set 
+            {
+                if (!String.IsNullOrEmpty(FName))
+                    BreezeCore.CurrentWorld.RenameEntity(FName, value);
+                FName = value;
+            }
+        }
+
+        public int InstanceID
+        {
+            get { return FInstanceID; }
+            set
+            {
+                FInstanceID = value;
+                Name = InstanceStr;
+            }
+        }
 
         public string InstanceStr
         {
-            get { return Name + InstanceID.ToString(); }
+            get { return CommonName + FInstanceID; }
         }
-            
+
+        [Editable]
         public double X
         {
             get { return FX; }
@@ -28,6 +53,7 @@ namespace Breeze.Game
             }
         }
 
+        [Editable]
         public double Y
         {
             get { return FY; }
@@ -43,7 +69,7 @@ namespace Breeze.Game
             
         }
 
-        public Entity(Graphics.Drawable image) : this()
+        public Entity(Drawable image) : this()
         {
             Image = image;
         }
@@ -51,7 +77,7 @@ namespace Breeze.Game
         ~Entity()
         {
             if (Image != null)
-                Graphics.Screen.FindLayer(Image.Layer).RemoveChild(Image);
+                Image.Layer.RemoveChild(Image);
         }
     }
 }

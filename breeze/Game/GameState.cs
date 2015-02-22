@@ -7,8 +7,6 @@ namespace Breeze.Game
 {
     public abstract class GameState
     {
-        protected Dictionary<string, Entity> Entities;
-        protected Dictionary<string, int> Counter;
         protected List<BaseAutomation> Automations;
         protected List<IUpdatable> Updatables;
         public GameState Prev;
@@ -16,20 +14,13 @@ namespace Breeze.Game
 
         protected GameState()
         {
-            Entities = new Dictionary<string, Entity>();
-            Counter = new Dictionary<string, int>();
             Automations = new List<BaseAutomation>();
             Updatables = new List<IUpdatable>();
         }
 
         public void AddEntity(Entity entity)
         {
-            if (!Counter.ContainsKey(entity.Name))
-                Counter.Add(entity.Name, 0);
-            
-            Entities.Add(entity.Name + Counter[entity.Name].ToString(), entity);
-            entity.InstanceID = Counter[entity.Name];
-            Counter[entity.Name]++;
+            BreezeCore.CurrentWorld.AddEntity(entity);
 
             if (entity is IUpdatable)
                 AddUpdatable((IUpdatable)entity);
@@ -37,10 +28,12 @@ namespace Breeze.Game
 
         public void RemoveEntity(string instance)
         {
-            if (Entities[instance] is IUpdatable)
-                RemoveUpdatable((IUpdatable)Entities[instance]);
+            var entity = BreezeCore.CurrentWorld.GetEntity(instance);
 
-            Entities.Remove(instance);
+            if (entity is IUpdatable)
+                RemoveUpdatable((IUpdatable)entity);
+
+            BreezeCore.CurrentWorld.RemoveEntity(instance);
         }
 
         public void AddUpdatable(IUpdatable upd)
@@ -77,42 +70,10 @@ namespace Breeze.Game
                 upd.Update(e.Interval);
         }
 
-        public void ImportMap(string filename)
-        {
-            XmlDocument xml = new XmlDocument();
-            xml.Load(filename);
-
-            XmlElement root = xml.DocumentElement;
-            foreach (XmlNode ch in root.ChildNodes)
-            {
-                XmlElement el = (XmlElement)ch;
-                switch (el.Name)
-                {
-                    case "entity":
-                        // Spawning entities
-                        foreach (XmlNode anode in el.ChildNodes)
-                        {
-                            BuildParams par = new BuildParams();
-                            string type = "";
-                            foreach (XmlAttribute attr in ((XmlElement)anode).Attributes)
-                            {
-                                if (attr.Name != "type")
-                                    par.Add(attr.Name, attr.Value);
-                                else
-                                    type = attr.Value;
-                            }
-                            AddEntity(Entity.Build(Type.GetType(type), par));
-                        }
-                        break;
-                }
-            }
-        }
-
         public abstract void Enter();
         public abstract void Leave();
         public abstract void HandleKeyPress(object sender, KeyEventArgs e);
         public abstract void HandleKeyRelease(object sender, KeyEventArgs e);
-        public abstract void ProcessEvent(object sender, EventArgs e);
     }
 }
 

@@ -6,7 +6,8 @@ using SDL2;
 
 namespace Breeze.Resources
 {
-	public abstract class Resource
+    [Serializable]
+    public abstract class Resource
 	{
 		public string Name { get; protected set; }
         public string Source { get; protected set; }

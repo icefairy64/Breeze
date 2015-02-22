@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SFML;
 using SFML.Graphics;
 
 namespace Breeze.Graphics
@@ -96,7 +95,7 @@ namespace Breeze.Graphics
         protected byte FAlpha;
         protected float FScale;
 
-        public string Layer;
+        public Layer Layer;
 
         // Methods
 

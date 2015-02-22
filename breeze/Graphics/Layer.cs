@@ -14,8 +14,6 @@ namespace Breeze.Graphics
         protected int ChunkValidateCounter = 0;
         protected int OuterRenderRadius = 2;
         protected float FZoom = 1f;
-        protected RectangleShape ClearRect;
-        protected RenderStates ClearStates;
         protected SFML.Graphics.Sprite Spr;
 
         public View View;
@@ -40,12 +38,7 @@ namespace Breeze.Graphics
             View = new View(new FloatRect(0, 0, FW, FH));
             SrcRect = new FloatRect(0, 0, FW, FH);
             Spr = new SFML.Graphics.Sprite(Buffer.Texture);
-            ClearRect = new RectangleShape(new SFML.Window.Vector2f(FW, FH));
-            ClearStates = new RenderStates();
 
-            ClearRect.FillColor = new Color(0, 0, 0, 0xff);
-            ClearStates.BlendMode = BlendMode.None;
-            States.BlendMode = BlendMode.Alpha;
             States.Transform = Transform.Identity;
             Spr.Color = Color;
 
@@ -54,7 +47,6 @@ namespace Breeze.Graphics
 
             Chunked = chunked;
 			Name = name;
-            ZOrder = zorder;
 		}
 		
         protected override void InternalDraw(Transform tf)
@@ -66,7 +58,6 @@ namespace Breeze.Graphics
 		{
             Screen.CurrentTarget = Buffer;
             Buffer.Clear(Color.Transparent);
-            //ClearRect.Draw(Buffer, ClearStates);
             Buffer.SetView(View);
             Spr.Color = Color;
 			
@@ -119,7 +110,7 @@ namespace Breeze.Graphics
 		{
 			int index = Children.FindIndex(item => item.ZOrder > dr.ZOrder);
 			index = (index >= 0) ? index : Children.Count;
-            dr.Layer = Name;
+            dr.Layer = this;
 
 			Children.Insert(index, dr);
 

@@ -6,19 +6,26 @@ using SFML.Graphics;
 
 namespace Breeze.Graphics
 {
+    [Serializable]
 	public class Sprite : Drawable
 	{
 		public double AnimSpeed;
 		public bool Animated;
 
-		protected double Time;
-		protected int FCurrentFrame;
-		protected int FCurrentSheet;
+        [NonSerialized]
+        protected double Time;
+        [NonSerialized]
+        protected int FCurrentFrame;
+        [NonSerialized]
+        protected int FCurrentSheet;
+        [NonSerialized]
         protected IntRect SrcRect;
+        [NonSerialized]
+        protected SFML.Graphics.Sprite Spr;
+
         protected string Base = "";
         protected List<SpriteSheet> Sheets;
-        protected SFML.Graphics.Sprite Spr;
-		
+
 		public int CurrentSheet
 		{
 			get { return FCurrentSheet;	}
@@ -43,6 +50,15 @@ namespace Breeze.Graphics
 			}
 		}
 		
+        protected static SpriteSheet[] GetSheets(string[] sheets)
+        {
+            var tmp = new SpriteSheet[sheets.Length];
+            for (int i = 0; i < sheets.Length; i++)
+                tmp[i] = ResourceManager.Find<SpriteSheet>(sheets[i]);
+
+            return tmp;
+        }
+
 		public void Start()
 		{
 			W = Sheets[0].W;
@@ -64,7 +80,12 @@ namespace Breeze.Graphics
 			Animated = false;
 		}
 		
-		public Sprite(string[] sheets, int zorder = 0) 
+        public Sprite(string[] sheets, int zorder = 0)
+            : this(GetSheets(sheets), zorder)
+        {
+        }
+
+        public Sprite(SpriteSheet[] sheets, int zorder = 0) 
             : this(zorder)
 		{
 			if (sheets.Length == 0)
@@ -72,7 +93,7 @@ namespace Breeze.Graphics
 
 			for (int i = 0; i < sheets.Length; i++)
             {
-				Sheets.Add(ResourceManager.Find<SpriteSheet>(sheets[i]));
+				Sheets.Add(sheets[i]);
 				Animated = Animated || Sheets[Sheets.Count - 1].Animated;
 			}
 

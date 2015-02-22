@@ -77,6 +77,8 @@
     <Compile Include="ChunkCollection.cs" />
     <Compile Include="Game\EntityChunkCollection.cs" />
     <Compile Include="Graphics\DrawableChunkCollection.cs" />
+    <Compile Include="Game\World.cs" />
+    <Compile Include="Game\WorldEditorAttributes.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

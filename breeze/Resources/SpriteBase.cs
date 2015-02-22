@@ -4,16 +4,17 @@ using System.Xml;
 
 namespace Breeze.Resources
 {
+    [Serializable]
     public class SpriteBase : Resource
     {
-        public string[] Sheets;
+        public SpriteSheet[] Sheets;
 
         public SpriteBase(string filename) 
             : base(filename)
         {
             XmlDocument xml = new XmlDocument();
             xml.Load(filename);
-            List<string> tmp = new List<string>();
+            List<SpriteSheet> tmp = new List<SpriteSheet>();
 
             XmlElement root = xml.DocumentElement;
             if (root.HasAttribute("name"))
@@ -21,8 +22,8 @@ namespace Breeze.Resources
 
             foreach (XmlNode child in root.ChildNodes)
             {
-                Resource ld = ResourceManager.Load<SpriteSheet>(((XmlElement)child).InnerText);
-                tmp.Add(ld.Name);
+                var ld = ResourceManager.Load<SpriteSheet>(((XmlElement)child).InnerText);
+                tmp.Add(ld);
             }
 
             Sheets = tmp.ToArray();

@@ -39,9 +39,12 @@ namespace Breeze
         public static event EventHandler<TimerEventArgs> OnUpdate;
 
         public static bool Exit = false;
+
+        public static World CurrentWorld;
+
         static GameState FCurrentState;
 
-        private static void HandleException(Exception e)
+        static void HandleException(Exception e)
         {
             Console.WriteLine(e.StackTrace);
         }
@@ -79,6 +82,8 @@ namespace Breeze
 			
             ResourceManager.Init();
             Screen.Init();
+
+            CurrentWorld = new World();
 			
             if (OnInit != null)
                 OnInit();
@@ -162,9 +167,6 @@ namespace Breeze
             Window.Clear();
             Screen.Draw();
             Window.Display();
-
-            //if (OnDraw != null)
-            //    OnDraw(Renderer);
         }
 
         public static void Finish()

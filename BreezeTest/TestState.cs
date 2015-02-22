@@ -40,7 +40,7 @@ namespace BreezeTest
 
         public Cornet() : base()
         {
-            Name = "cornet";
+            CommonName = "cornet";
             //Image = new Sprite(new string[]{ "cornet_stand0", "cornet_stand1", "cornet_stand2", "cornet_stand3", "cornet_walk0", "cornet_walk1", "cornet_walk2", "cornet_walk3" });
             Image = new Sprite("cornet");
             Image.Scale = 2;
@@ -71,14 +71,14 @@ namespace BreezeTest
             ResourceManager.Load<SpriteSheet>("mothergreen_house0.png");
             ResourceManager.Load<Font>("hammersmithone.ttf");
 
-            Screen.CreateLayer("front", 1);
-            Screen.CreateLayer("back", 0, false);
+            var frontLayer = Screen.CreateLayer("front", 1);
+            var backLayer = Screen.CreateLayer("back", 0, false);
 
             Sprite back = new Sprite(new string[]{ "mothergreen_house0" });
             back.Scale = 2;
             back.X = (int)BreezeCore.ScrW / 2 - back.W;
             back.Y = (int)BreezeCore.ScrH / 2 - back.H;
-            Screen.FindLayer("back").Insert(back);
+            backLayer.Insert(back);
 
             //Screen.FindLayer("back").Zoom = 4f;
             //Screen.FindLayer("front").Zoom = 4f;
@@ -104,11 +104,6 @@ namespace BreezeTest
         public override void Leave()
         {
             
-        }
-
-        public override void ProcessEvent(object sender, EventArgs e)
-        {
-            //Console.WriteLine(ev.type);
         }
 
         void SetKeyState(int index, bool newstate)
