@@ -38,6 +38,7 @@ namespace Breeze.Graphics
         {
             Font = font;
             Txt = new SFML.Graphics.Text();
+            Txt.Font = font.Handle;
         }
 
         ~Text()

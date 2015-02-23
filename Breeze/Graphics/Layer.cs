@@ -15,12 +15,21 @@ namespace Breeze.Graphics
         protected int OuterRenderRadius = 2;
         protected float FZoom = 1f;
         protected SFML.Graphics.Sprite Spr;
+        protected bool NeedsRendering;
+
+        [Editable("Scroll speed")]
+        public float ScrollSpeed = 1.0f;
+        [Editable]
+        public Layer[] Sources;
+        [Editable]
+        public bool Bypass;
+        [Editable]
+        public bool Visible = true;
 
         public View View;
-		public string Name { get; protected set; }
         public bool Chunked { get; protected set; }
-        public float ScrollSpeed = 1.0f;
-		
+        public string Name { get; protected set; }
+
         public float Zoom 
         {
             get { return FZoom; }
@@ -56,6 +65,10 @@ namespace Breeze.Graphics
 		
         public override void Draw()
 		{
+            if (!NeedsRendering)
+                goto Drawing;
+
+            var prevTarget = Screen.CurrentTarget;
             Screen.CurrentTarget = Buffer;
             Buffer.Clear(Color.Transparent);
             Buffer.SetView(View);
@@ -97,13 +110,13 @@ namespace Breeze.Graphics
                         }
                     }
             }
-
-            //foreach (Drawable dr in Children)
-            //    dr.Draw(rx, ry, rangle);
-
+                
             Buffer.Display();
-            Screen.CurrentTarget = Screen.Buffer;
-            Screen.Buffer.Draw(Spr, States);
+            Screen.CurrentTarget = prevTarget;
+            NeedsRendering = false;
+
+            Drawing:
+            Screen.CurrentTarget.Draw(Spr, States);
 		}
 		
 		public void Insert(Drawable dr)
@@ -117,6 +130,17 @@ namespace Breeze.Graphics
             if (Chunked)
                 Chunks.InsertAt(dr, dr.X, dr.Y);
 		}
+
+        public void Reset()
+        {
+            NeedsRendering = true;
+
+            if (Sources != null)
+            {
+                foreach (Layer lr in Sources)
+                    lr.Reset();
+            }
+        }
 
         ~Layer()
         {

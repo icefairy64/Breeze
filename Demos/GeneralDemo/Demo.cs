@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Breeze;
-using Breeze.Graphics;
 using Breeze.Resources;
 
 namespace BreezeTest
@@ -10,8 +9,8 @@ namespace BreezeTest
 	{		
 		static void OnInit()
 		{
-            Breeze.Resources.ResourceManager.RootDir = String.Format("..{0}..{0}data{0}", Path.DirectorySeparatorChar);
-            Breeze.Resources.ResourceManager.SpritesDir = String.Format("sprites{0}", Path.DirectorySeparatorChar);
+            ResourceManager.RootDir = String.Format("..{0}..{0}..{0}Data{0}", Path.DirectorySeparatorChar);
+            ResourceManager.SpritesDir = String.Format("sprites{0}", Path.DirectorySeparatorChar);
 
             BreezeCore.CurrentState = new TestState();
 		}

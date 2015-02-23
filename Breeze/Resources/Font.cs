@@ -17,7 +17,7 @@ namespace Breeze.Resources
         {
             if (Handle == null)
                 return; 
-            Console.WriteLine("Freeing font: {0:x16}", Handle.CPointer.ToInt64());
+            //Console.WriteLine("Freeing font: {0:x16}", Handle.CPointer.ToInt64());
             Handle.Dispose();
             Handle = null;
         }

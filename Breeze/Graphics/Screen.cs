@@ -58,12 +58,18 @@ namespace Breeze.Graphics
         {
             // Clearing buffer
             Buffer.Draw(ClearRect);
+            CurrentTarget = Buffer;
+
+            // Resetting layers
+            foreach (Layer lr in Layers)
+                lr.Reset();
 
             // Rendering
             foreach (Layer lr in Layers)
             {
                 lr.View.Center = new SFML.Window.Vector2f(CamX * lr.ScrollSpeed, CamY * lr.ScrollSpeed);
-                lr.Draw();
+                if (lr.Visible)
+                    lr.Draw();
             }
             
             // Drawing

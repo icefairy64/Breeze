@@ -91,7 +91,7 @@ namespace Breeze.Resources
         {
             if (Texture == null)
                 return;  
-            Console.WriteLine("Freeing texture: {0:x16}", Texture.CPointer.ToInt64());
+            //Console.WriteLine("Freeing texture: {0:x16}", Texture.CPointer.ToInt64());
             Texture.Dispose();
             Texture = null;
         }
