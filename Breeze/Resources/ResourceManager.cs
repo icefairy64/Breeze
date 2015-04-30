@@ -20,6 +20,11 @@ namespace Breeze.Resources
         /// Specifies relative path for fonts; trailing slash is required
         /// </summary>
         public static string FontsDir = "";
+
+        /// <summary>
+        /// Specifies relative path for sounds; trailing slash is required
+        /// </summary>
+        public static string SoundsDir = "";
 		
 		private static Dictionary<string, Resource> Resources;
 		
@@ -57,6 +62,11 @@ namespace Breeze.Resources
             return RootDir + FontsDir;
         }
 
+        public static string PathToSounds()
+        {
+            return RootDir + SoundsDir;
+        }
+
         public static string PathTo<T>() where T : Resource
         {
             switch (typeof(T).Name)
@@ -67,6 +77,8 @@ namespace Breeze.Resources
                     return PathToSprites(); 
                 case "Font":
                     return PathToFonts();
+                case "SoundBuffer":
+                    return PathToSounds();
                 default:
                     return RootDir;
             }

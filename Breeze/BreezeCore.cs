@@ -25,6 +25,7 @@ namespace Breeze
     public static class BreezeCore
     {
         public static RenderWindow Window;
+        public static bool FixedDT;
 
         public static uint ScrW { get; private set; }
         public static uint ScrH { get; private set; }
@@ -70,10 +71,11 @@ namespace Breeze
             }
         }
 
-        public static void Init(string title, uint scrw, uint scrh)
+        public static void Init(string title, uint scrw, uint scrh, bool fixedDT = true)
         {
             ScrW = scrw;
             ScrH = scrh;
+            FixedDT = fixedDT;
 		
             Window = new RenderWindow(new VideoMode(scrw, scrh), title);
             Window.SetVerticalSyncEnabled(false);
@@ -115,8 +117,7 @@ namespace Breeze
                     Render();
 
                     after = DateTime.Now;
-                    //dt = (uint)after.Subtract(before).Milliseconds;
-                    dt = 16;
+                    dt = FixedDT ? 16 : (uint)after.Subtract(before).Milliseconds;
                 }
             }
             catch (Exception e)

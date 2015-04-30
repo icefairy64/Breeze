@@ -78,13 +78,19 @@
     <Compile Include="Game\EntityChunkCollection.cs" />
     <Compile Include="Graphics\DrawableChunkCollection.cs" />
     <Compile Include="Game\World.cs" />
-    <Compile Include="Game\WorldEditorAttributes.cs" />
+    <Compile Include="WorldEditorAttributes.cs" />
+    <Compile Include="Graphics\MaskLayer.cs" />
+    <Compile Include="Resources\SoundBuffer.cs" />
+    <Compile Include="Sound\Sound.cs" />
+    <Compile Include="Sound\AbstractSource.cs" />
+    <Compile Include="Sound\Channel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Game\" />
     <Folder Include="Graphics\" />
     <Folder Include="Resources\" />
+    <Folder Include="Sound\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

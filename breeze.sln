@@ -10,12 +10,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C1A9DEF0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneralDemo", "Demos\GeneralDemo\GeneralDemo.csproj", "{831C2D14-F2A7-4FA3-B538-6579518A9EBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayersDemo", "..\..\..\..\ishido\Documents\CSharp\Breeze\Demos\LayersDemo\LayersDemo.csproj", "{82682F2E-B89D-44E6-84BC-5C6FF7C1A108}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82682F2E-B89D-44E6-84BC-5C6FF7C1A108}.Debug|x86.ActiveCfg = Debug|x86
+		{82682F2E-B89D-44E6-84BC-5C6FF7C1A108}.Debug|x86.Build.0 = Debug|x86
+		{82682F2E-B89D-44E6-84BC-5C6FF7C1A108}.Release|x86.ActiveCfg = Release|x86
+		{82682F2E-B89D-44E6-84BC-5C6FF7C1A108}.Release|x86.Build.0 = Release|x86
 		{831C2D14-F2A7-4FA3-B538-6579518A9EBB}.Debug|x86.ActiveCfg = Debug|x86
 		{831C2D14-F2A7-4FA3-B538-6579518A9EBB}.Debug|x86.Build.0 = Debug|x86
 		{831C2D14-F2A7-4FA3-B538-6579518A9EBB}.Release|x86.ActiveCfg = Release|x86
@@ -27,6 +33,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{831C2D14-F2A7-4FA3-B538-6579518A9EBB} = {C1A9DEF0-405C-40D8-98C1-385302ABFEDD}
+		{82682F2E-B89D-44E6-84BC-5C6FF7C1A108} = {C1A9DEF0-405C-40D8-98C1-385302ABFEDD}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
