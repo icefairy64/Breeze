@@ -24,7 +24,7 @@ namespace Breeze.Graphics
 
             Buffer = new RenderTexture(BreezeCore.ScrW, BreezeCore.ScrH);
             Spr = new SFML.Graphics.Sprite(Buffer.Texture);
-            ClearRect = new RectangleShape(new SFML.Window.Vector2f(BreezeCore.ScrW, BreezeCore.ScrH)) { FillColor = Color.Black };
+            ClearRect = new RectangleShape(new SFML.System.Vector2f(BreezeCore.ScrW, BreezeCore.ScrH)) { FillColor = Color.Black };
         }
 
         public static void InsertLayer(Layer layer)
@@ -67,7 +67,7 @@ namespace Breeze.Graphics
             // Rendering
             foreach (Layer lr in Layers)
             {
-                lr.View.Center = new SFML.Window.Vector2f(CamX * lr.ScrollSpeed, CamY * lr.ScrollSpeed);
+                lr.View.Center = new SFML.System.Vector2f(CamX * lr.ScrollSpeed, CamY * lr.ScrollSpeed);
                 if (lr.Visible)
                     lr.Draw();
             }
