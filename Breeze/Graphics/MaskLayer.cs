@@ -14,9 +14,9 @@ namespace Breeze.Graphics
             Sources = new Layer[1];
             Sources[0] = src;
 
-            FillRect = new RectangleShape(new SFML.Window.Vector2f(FW, FH));
+            FillRect = new RectangleShape(new SFML.System.Vector2f(FW, FH));
             FillRect.FillColor = new Color(0xff, 0xff, 0xff, 0x20);
-            FillRect.Position = new SFML.Window.Vector2f(0, 0);
+            FillRect.Position = new SFML.System.Vector2f(0, 0);
 
             FillStates = new RenderStates();
             FillStates.BlendMode = BlendMode.Add;

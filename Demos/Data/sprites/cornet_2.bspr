@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sprite name="cornet_walk2">
+  <image cols="6" animated="1">cornet_2.png</image>
+  <frames>
+    <frame interval="100"/>
+    <frame interval="100"/>
+    <frame interval="100"/>
+    <frame interval="100"/>
+    <frame interval="100"/>
+    <frame interval="100"/>
+  </frames>
+</sprite>

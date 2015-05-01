@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sprite name="cornet">
+  <sheet>cornet_stand0.png</sheet>
+  <sheet>cornet_stand1.png</sheet>
+  <sheet>cornet_stand2.png</sheet>
+  <sheet>cornet_stand3.png</sheet>
+  <sheet>cornet_0.bspr</sheet>
+  <sheet>cornet_1.bspr</sheet>
+  <sheet>cornet_2.bspr</sheet>
+  <sheet>cornet_3.bspr</sheet>
+</sprite>

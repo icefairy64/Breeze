@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sprite name="lkun">
+  <image cols="4" animated="1">lkun.png</image>
+  <frames>
+    <frame interval="100"/>
+    <frame interval="100"/>
+    <frame interval="100"/>
+    <frame interval="100"/>
+  </frames>
+</sprite>
