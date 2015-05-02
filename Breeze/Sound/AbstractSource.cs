@@ -26,25 +26,37 @@ namespace Breeze.Sound
 
         public float Volume
         {
-            get { return GetVolume(); }
-            set { SetVolume(value * (FChannel != null ? FChannel.Volume : 1.0f)); }
+            get { return FVolume; }
+            set 
+            { 
+                FVolume = value;
+                SetVolume(value * (FChannel != null ? FChannel.Volume : 1.0f)); 
+            }
         }
 
         public float Attenuation
         {
-            get { return GetAttenuation(); }
-            set { SetAttenuation(value * (FChannel != null ? FChannel.AttenuationMultiplier : 1.0f)); }
+            get { return FAttenuation; }
+            set 
+            { 
+                FAttenuation = value;
+                SetAttenuation(value * (FChannel != null ? FChannel.AttenuationMultiplier : 1.0f)); 
+            }
         }
 
         public float MinDistance
         {
-            get { return GetMinDistance(); }
-            set { SetMinDistance(value * (FChannel != null ? FChannel.MinDistanceMultiplier : 1.0f)); }
+            get { return FMinDistance; }
+            set 
+            { 
+                FMinDistance = value;
+                SetMinDistance(value * (FChannel != null ? FChannel.MinDistanceMultiplier : 1.0f)); 
+            }
         }
 
         public float X
         {
-            get { return GetX(); }
+            get { return FPosition.X; }
             set 
             { 
                 FPosition.X = value;
@@ -54,48 +66,23 @@ namespace Breeze.Sound
 
         public float Y
         {
-            get { return GetY(); }
+            get { return FPosition.Z; }
             set 
             { 
-                FPosition.Y = value;
+                FPosition.Z = value;
                 SetY(value);
             }
         }
 
-        public float Pitch
-        {
-            get { return GetPitch(); }
-            set { SetPitch(value); }
-        }
-
-        public bool Loop
-        {
-            get { return IsLooped(); }
-            set { SetLoop(value); }
-        }
-
-        public bool RelativeToListener
-        {
-            get { return IsRelative(); }
-            set { SetRelative(value); }
-        }
-
-        protected abstract float GetVolume();
+        public abstract float Pitch { get; set; }
+        public abstract bool Loop { get; set; }
+        public abstract bool RelativeToListener { get; set; }
+            
         protected abstract void SetVolume(float value);
-        protected abstract float GetAttenuation();
         protected abstract void SetAttenuation(float value);
-        protected abstract float GetMinDistance();
         protected abstract void SetMinDistance(float value);
-        protected abstract float GetX();
         protected abstract void SetX(float value);
-        protected abstract float GetY();
         protected abstract void SetY(float value);
-        protected abstract float GetPitch();
-        protected abstract void SetPitch(float value);
-        protected abstract bool IsLooped();
-        protected abstract void SetLoop(bool value);
-        protected abstract bool IsRelative();
-        protected abstract void SetRelative(bool value);
 
         public abstract void Pause();
         public abstract void Play();

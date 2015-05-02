@@ -3,6 +3,7 @@ using SFML.Graphics;
 
 namespace Breeze.Resources
 {
+    [Serializable]
     public class Font : Resource
     {
         public SFML.Graphics.Font Handle { get; protected set; }

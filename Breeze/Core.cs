@@ -6,6 +6,8 @@ using Breeze.Resources;
 using SFML;
 using SFML.Window;
 using SFML.Graphics;
+using SFML.System;
+using Neo.IronLua;
 
 namespace Breeze
 {
@@ -16,13 +18,14 @@ namespace Breeze
         
     public delegate void DrawHandler(IntPtr renderer);
     public delegate void CoreEventHandler();
+    public delegate void ExceptionHandler(Exception e);
 
     public interface IUpdatable
     {
         void Update(uint interval);
     }
 
-    public static class BreezeCore
+    public static class Core
     {
         public static RenderWindow Window;
         public static bool FixedDT;
@@ -30,48 +33,59 @@ namespace Breeze
         public static uint ScrW { get; private set; }
         public static uint ScrH { get; private set; }
 
+        public static bool Exit;
+        public static World World;
+        public static Lua LuaEngine { get; private set; }
+        public static LuaGlobal LuaEnvironment { get; private set; }
+        public static LuaCompileOptions LuaCompileOptions { get; private set; }
+
         public static DrawHandler OnDraw;
         public static CoreEventHandler OnInit;
         public static CoreEventHandler OnMainLoopStart;
         public static CoreEventHandler OnMainLoop;
         public static CoreEventHandler OnMainLoopFinish;
+        public static ExceptionHandler OnException;
 
         public static event EventHandler<TimerEventArgs> OnAnimate;
         public static event EventHandler<TimerEventArgs> OnUpdate;
 
-        public static bool Exit = false;
-
-        public static World CurrentWorld;
-
-        static GameState FCurrentState;
+        static GameState FState;
+        static Clock Clock;
 
         static void HandleException(Exception e)
         {
+            if (ExceptionHandler != null)
+            {
+                ExceptionHandler(e);
+                return;
+            }
+
             Console.WriteLine(e.StackTrace);
+            throw e;
         }
 
-        public static GameState CurrentState
+        public static GameState State
         {
-            get { return FCurrentState; }
+            get { return FState; }
             set
             {
-                if (FCurrentState != null)
+                if (FState != null)
                 {
-                    Window.KeyPressed -= FCurrentState.HandleKeyPress;
-                    Window.KeyReleased -= FCurrentState.HandleKeyRelease;
-                    OnUpdate -= FCurrentState.Update;
-                    FCurrentState.Leave();
+                    Window.KeyPressed -= FState.HandleKeyPress;
+                    Window.KeyReleased -= FState.HandleKeyRelease;
+                    OnUpdate -= FState.Update;
+                    FState.Leave();
                 }
-                FCurrentState = value;
+                FState = value;
 
-                FCurrentState.Enter();
-                Window.KeyPressed += FCurrentState.HandleKeyPress;
-                Window.KeyReleased += FCurrentState.HandleKeyRelease;
-                OnUpdate += FCurrentState.Update;
+                FState.Enter();
+                Window.KeyPressed += FState.HandleKeyPress;
+                Window.KeyReleased += FState.HandleKeyRelease;
+                OnUpdate += FState.Update;
             }
         }
 
-        public static void Init(string title, uint scrw, uint scrh, bool fixedDT = true)
+        public static void Init(string title, uint scrw, uint scrh, bool fixedDT = false)
         {
             ScrW = scrw;
             ScrH = scrh;
@@ -81,11 +95,17 @@ namespace Breeze
             Window.SetVerticalSyncEnabled(false);
             Window.SetFramerateLimit(60);
             Window.SetKeyRepeatEnabled(false);
+
+            Clock = new Clock();
+
+            LuaEngine = new Lua();
+            LuaEnvironment = LuaEngine.CreateEnvironment();
+            LuaCompileOptions = new LuaCompileOptions();
 			
             ResourceManager.Init();
             Screen.Init();
 
-            CurrentWorld = new World();
+            World = new World();
 			
             if (OnInit != null)
                 OnInit();
@@ -95,29 +115,26 @@ namespace Breeze
         {
             if (OnMainLoopStart != null)
                 OnMainLoopStart();
-
-            DateTime before;
-            DateTime after = DateTime.Now;
+                
             uint dt = 0;
+            var arg = new TimerEventArgs();
 
             try
             {
                 while (!Exit)
                 {
-                    before = after;
-
                     Window.DispatchEvents();
 
                     if (OnMainLoop != null)
                         OnMainLoop(); 
 
-                    UpdateCallback(dt, IntPtr.Zero);
-                    AnimateCallback(dt, IntPtr.Zero);
+                    Update(arg, IntPtr.Zero);
+                    Animate(arg, IntPtr.Zero);
 
                     Render();
 
-                    after = DateTime.Now;
-                    dt = FixedDT ? 16 : (uint)after.Subtract(before).Milliseconds;
+                    dt = FixedDT ? 16 : (uint)Clock.Restart().AsMilliseconds();
+                    arg.Interval = dt;
                 }
             }
             catch (Exception e)
@@ -129,38 +146,36 @@ namespace Breeze
                 OnMainLoopFinish();
         }
 
-        static uint AnimateCallback(uint interval, IntPtr param)
+        static uint Animate(TimerEventArgs e, IntPtr param)
         {
             try
             {
-                TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
-                EventHandler<TimerEventArgs> handler = OnAnimate;
+                var handler = OnAnimate;
                 if (handler != null)
-                    handler(null, arg);
+                    handler(null, e);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                HandleException(e);
+                HandleException(ex);
             }
 
-            return interval;
+            return e.Interval;
         }
 
-        static uint UpdateCallback(uint interval, IntPtr param)
+        static uint Update(TimerEventArgs e, IntPtr param)
         {
             try
             {
-                TimerEventArgs arg = new TimerEventArgs() { Interval = interval };
-                EventHandler<TimerEventArgs> handler = OnUpdate;
+                var handler = OnUpdate;
                 if (handler != null)
-                    handler(null, arg);
+                    handler(null, e);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                HandleException(e);
+                HandleException(ex);
             }
 
-            return interval;
+            return e.Interval;
         }       
 
         static void Render()

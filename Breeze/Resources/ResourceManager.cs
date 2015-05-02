@@ -25,6 +25,11 @@ namespace Breeze.Resources
         /// Specifies relative path for sounds; trailing slash is required
         /// </summary>
         public static string SoundsDir = "";
+
+        /// <summary>
+        /// Specifies relative path for scripts; trailing slash is required
+        /// </summary>
+        public static string ScriptsDir = "";
 		
 		private static Dictionary<string, Resource> Resources;
 		
@@ -67,6 +72,11 @@ namespace Breeze.Resources
             return RootDir + SoundsDir;
         }
 
+        public static string PathToScripts()
+        {
+            return RootDir + ScriptsDir;
+        }
+
         public static string PathTo<T>() where T : Resource
         {
             switch (typeof(T).Name)
@@ -79,6 +89,8 @@ namespace Breeze.Resources
                     return PathToFonts();
                 case "SoundBuffer":
                     return PathToSounds();
+                case "LuaScript":
+                    return PathToScripts();
                 default:
                     return RootDir;
             }

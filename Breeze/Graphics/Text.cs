@@ -30,7 +30,7 @@ namespace Breeze.Graphics
         {
             States.Transform = tf;
             Txt.Color = Color;
-            Screen.CurrentTarget.Draw(Txt, States);
+            Screen.Target.Draw(Txt, States);
         }
 
         public Text(Resources.Font font, int zorder = 0) 

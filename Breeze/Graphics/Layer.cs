@@ -41,7 +41,7 @@ namespace Breeze.Graphics
         }
 
         public Layer(string name, int zorder = 0, bool chunked = true)
-            : base(0, 0, (int)BreezeCore.ScrW, (int)BreezeCore.ScrH, zorder)
+            : base(0, 0, (int)Core.ScrW, (int)Core.ScrH, zorder)
 		{
             Buffer = new RenderTexture((uint)FW, (uint)FH);
             View = new View(new FloatRect(0, 0, FW, FH));
@@ -68,8 +68,8 @@ namespace Breeze.Graphics
             if (!NeedsRendering)
                 goto Drawing;
 
-            var prevTarget = Screen.CurrentTarget;
-            Screen.CurrentTarget = Buffer;
+            var prevTarget = Screen.Target;
+            Screen.Target = Buffer;
             Buffer.Clear(Color.Transparent);
             Buffer.SetView(View);
             Spr.Color = Color;
@@ -112,11 +112,11 @@ namespace Breeze.Graphics
             }
                 
             Buffer.Display();
-            Screen.CurrentTarget = prevTarget;
+            Screen.Target = prevTarget;
             NeedsRendering = false;
 
             Drawing:
-            Screen.CurrentTarget.Draw(Spr, States);
+            Screen.Target.Draw(Spr, States);
 		}
 		
 		public void Insert(Drawable dr)

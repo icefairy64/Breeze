@@ -29,7 +29,7 @@ namespace Breeze.Game
             Counter[entity.CommonName]++;
         }
 
-        public Entity GetEntity(string instance)
+        public Entity FindEntity(string instance)
         {
             return Entities.ContainsKey(instance) ? Entities[instance] : null;
         }
@@ -75,7 +75,7 @@ namespace Breeze.Game
                                 else
                                     type = attr.Value;
                             }
-                            AddEntity(Entity.Build(Type.GetType(type), par));
+                            AddEntity(Entity.Create(Type.GetType(type), par));
                         }
                         break;
                 }

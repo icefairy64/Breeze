@@ -8,21 +8,21 @@ namespace Breeze.Graphics
     {
         public float X, Y;
         public float Inertia = 0;
-        public int Radius = (int)BreezeCore.ScrH / 2;
+        public int Radius = (int)Core.ScrH / 2;
         protected float RX, RY;
 
         public Camera()
         {
-            RX = BreezeCore.ScrW / 2;
-            RY = BreezeCore.ScrH / 2;
+            RX = Core.ScrW / 2;
+            RY = Core.ScrH / 2;
             X = RX;
             Y = RY;
         }
 
         public void Update(uint interval)
         {
-            int dx = (int)Math.Max(0, Math.Abs(RX - X) - (BreezeCore.ScrW / 2 - Radius));
-            int dy = (int)Math.Max(0, Math.Abs(RY - Y) - (BreezeCore.ScrH / 2 - Radius));
+            int dx = (int)Math.Max(0, Math.Abs(RX - X) - (Core.ScrW / 2 - Radius));
+            int dy = (int)Math.Max(0, Math.Abs(RY - Y) - (Core.ScrH / 2 - Radius));
             int R = (int)Math.Sqrt(dx * dx + dy * dy);
 
             RX = RX + (X - RX) * (1 - Inertia) * R / Radius;

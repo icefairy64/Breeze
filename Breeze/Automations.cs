@@ -55,9 +55,9 @@ namespace Breeze
             {
                 // (Un)subscribe from/to core's animation timer
                 if (value && !FActive)
-                    BreezeCore.OnAnimate += Update;
+                    Core.OnAnimate += Update;
                 if (!value && FActive)
-                    BreezeCore.OnAnimate -= Update;
+                    Core.OnAnimate -= Update;
                 FActive = value;
             }
         }

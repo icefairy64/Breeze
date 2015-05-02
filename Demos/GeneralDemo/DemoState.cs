@@ -45,8 +45,8 @@ namespace BreezeTest
             Image = new Sprite("cornet");
             Image.Scale = 2;
             Screen.FindLayer("front").Insert(Image);
-            X = BreezeCore.ScrW / 2 - Image.W;
-            Y = BreezeCore.ScrH / 2 - Image.H;
+            X = Core.ScrW / 2 - Image.W;
+            Y = Core.ScrH / 2 - Image.H;
         }
 
         public override void Update(uint interval)
@@ -76,19 +76,16 @@ namespace BreezeTest
 
             Sprite back = new Sprite(new string[]{ "mothergreen_house0" });
             back.Scale = 2;
-            back.X = (int)BreezeCore.ScrW / 2 - back.W;
-            back.Y = (int)BreezeCore.ScrH / 2 - back.H;
+            back.X = (int)Core.ScrW / 2 - back.W;
+            back.Y = (int)Core.ScrH / 2 - back.H;
             backLayer.Insert(back);
-
-            //Screen.FindLayer("back").Zoom = 4f;
-            //Screen.FindLayer("front").Zoom = 4f;
 
             Player = new Cornet();
             AddEntity(Player);
 
             Cam = new Camera();
             Cam.Inertia = 0.1f;
-            Cam.Radius = (int)BreezeCore.ScrW / 2;
+            Cam.Radius = (int)Core.ScrW / 2;
             AddUpdatable(Cam);
         }
 
@@ -134,7 +131,7 @@ namespace BreezeTest
                     SetKeyState(3, newstate);
                     break;
                 case Keyboard.Key.Escape:
-                    BreezeCore.Exit = true;
+                    Core.Exit = true;
                     break;
                 case Keyboard.Key.Z:
                     if (newstate)

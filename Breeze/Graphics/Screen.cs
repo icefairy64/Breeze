@@ -13,7 +13,7 @@ namespace Breeze.Graphics
         static SFML.Graphics.Sprite Spr;
 
         public static RenderTexture Buffer { get; private set; }
-        public static RenderTarget CurrentTarget;
+        public static RenderTarget Target;
         public static float CamX;
         public static float CamY;
 
@@ -22,9 +22,9 @@ namespace Breeze.Graphics
             Layers = new List<Layer>();
             LayersDict = new Dictionary<string, Layer>();
 
-            Buffer = new RenderTexture(BreezeCore.ScrW, BreezeCore.ScrH);
+            Buffer = new RenderTexture(Core.ScrW, Core.ScrH);
             Spr = new SFML.Graphics.Sprite(Buffer.Texture);
-            ClearRect = new RectangleShape(new SFML.System.Vector2f(BreezeCore.ScrW, BreezeCore.ScrH)) { FillColor = Color.Black };
+            ClearRect = new RectangleShape(new SFML.System.Vector2f(Core.ScrW, Core.ScrH)) { FillColor = Color.Black };
         }
 
         public static void InsertLayer(Layer layer)
@@ -58,7 +58,7 @@ namespace Breeze.Graphics
         {
             // Clearing buffer
             Buffer.Draw(ClearRect);
-            CurrentTarget = Buffer;
+            Target = Buffer;
 
             // Resetting layers
             foreach (Layer lr in Layers)
@@ -74,8 +74,8 @@ namespace Breeze.Graphics
             
             // Drawing
             Buffer.Display();
-            CurrentTarget = BreezeCore.Window;
-            CurrentTarget.Draw(Spr);
+            Target = Core.Window;
+            Target.Draw(Spr);
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Breeze.Graphics
 			CurrentSheet = 0;
 			
 			if (Animated)
-				BreezeCore.OnAnimate += Animate;
+				Core.OnAnimate += Animate;
 		}
 		
 		public Sprite(int zorder = 0) 
@@ -117,7 +117,7 @@ namespace Breeze.Graphics
             Spr.Texture = Sheets[FCurrentSheet].Texture;
             Spr.TextureRect = SrcRect;
             Spr.Color = Color;
-            Screen.CurrentTarget.Draw(Spr, States);
+            Screen.Target.Draw(Spr, States);
         }
 		
 		protected void Animate(object sender, TimerEventArgs e)
@@ -145,7 +145,7 @@ namespace Breeze.Graphics
         ~Sprite()
         {
             if (Animated)
-                BreezeCore.OnAnimate -= Animate;
+                Core.OnAnimate -= Animate;
         }
 
         public override string ToString()

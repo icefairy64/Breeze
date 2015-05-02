@@ -9,7 +9,7 @@ namespace Breeze.Game
         [Editable]
         public Drawable Image;
        
-        public string CommonName;
+        public string CommonName { get; protected set; }
 
         protected int FInstanceID;
         protected double FX, FY;
@@ -22,7 +22,7 @@ namespace Breeze.Game
             set 
             {
                 if (!String.IsNullOrEmpty(FName))
-                    BreezeCore.CurrentWorld.RenameEntity(FName, value);
+                    Core.World.RenameEntity(FName, value);
                 FName = value;
             }
         }
@@ -69,7 +69,8 @@ namespace Breeze.Game
             
         }
 
-        public Entity(Drawable image) : this()
+        public Entity(Drawable image)
+            : this()
         {
             Image = image;
         }

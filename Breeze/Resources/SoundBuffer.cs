@@ -3,6 +3,7 @@ using SFML.Audio;
 
 namespace Breeze.Resources
 {
+    [Serializable]
     public class SoundBuffer : Resource
     {
         public SFML.Audio.SoundBuffer Buffer;

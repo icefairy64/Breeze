@@ -13,16 +13,16 @@ namespace LayersDemo
             ResourceManager.SpritesDir = String.Format("Sprites{0}", Path.DirectorySeparatorChar);
             ResourceManager.FontsDir = "";
 
-            BreezeCore.CurrentState = new DemoState();
+            Core.State = new DemoState();
         }
 
         public static void Main(string[] args)
         {
-            BreezeCore.OnInit = OnInit;
+            Core.OnInit = OnInit;
 
-            BreezeCore.Init("Breeze", 800, 600, false);
-            BreezeCore.Start();
-            BreezeCore.Finish();
+            Core.Init("Breeze", 800, 600, false);
+            Core.Start();
+            Core.Finish();
         }
     }
 }

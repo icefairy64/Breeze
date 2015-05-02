@@ -20,7 +20,7 @@ namespace Breeze.Game
 
         public void AddEntity(Entity entity)
         {
-            BreezeCore.CurrentWorld.AddEntity(entity);
+            Core.World.AddEntity(entity);
 
             if (entity is IUpdatable)
                 AddUpdatable((IUpdatable)entity);
@@ -28,12 +28,12 @@ namespace Breeze.Game
 
         public void RemoveEntity(string instance)
         {
-            var entity = BreezeCore.CurrentWorld.GetEntity(instance);
+            var entity = Core.World.FindEntity(instance);
 
             if (entity is IUpdatable)
                 RemoveUpdatable((IUpdatable)entity);
 
-            BreezeCore.CurrentWorld.RemoveEntity(instance);
+            Core.World.RemoveEntity(instance);
         }
 
         public void AddUpdatable(IUpdatable upd)

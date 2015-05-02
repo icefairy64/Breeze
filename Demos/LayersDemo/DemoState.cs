@@ -29,7 +29,7 @@ namespace LayersDemo
             var back2 = new Sprite(new string[] { "Buildings1" });
 
             stars.X = -stars.W / 2;
-            stars.Y = -stars.H + (int)BreezeCore.ScrH / 2;
+            stars.Y = -stars.H + (int)Core.ScrH / 2;
             back1.Y = stars.H - back1.H + stars.Y;
             back2.Y = stars.H - back2.H + stars.Y;
             back1.X = -back1.W / 2;
@@ -46,8 +46,8 @@ namespace LayersDemo
 
             var text = new Text(font);
             text.Size = 14;
-            text.X = -(int)BreezeCore.ScrW / 2 + 32;
-            text.Y = -(int)BreezeCore.ScrH / 2 + 32;
+            text.X = -(int)Core.ScrW / 2 + 32;
+            text.Y = -(int)Core.ScrH / 2 + 32;
             text.Value = "Z: toggle front layer visibility";
             text.Color = SFML.Graphics.Color.White;
 
@@ -83,7 +83,7 @@ namespace LayersDemo
             switch (e.Code)
             {
                 case Keyboard.Key.Escape:
-                    BreezeCore.Exit = true;
+                    Core.Exit = true;
                     break;
                 case Keyboard.Key.Z:
                     Screen.FindLayer("back2").Visible ^= true;

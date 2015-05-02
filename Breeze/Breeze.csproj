@@ -52,10 +52,12 @@
     <Reference Include="sfmlnet-system-2">
       <HintPath>..\packages\SFML.Net.2.2\lib\sfmlnet-system-2.dll</HintPath>
     </Reference>
+    <Reference Include="Neo.Lua">
+      <HintPath>..\packages\NeoLua.0.9.15\lib\net4\Neo.Lua.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="BreezeCore.cs" />
     <Compile Include="Automations.cs" />
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="Graphics\Drawable.cs" />
@@ -84,9 +86,12 @@
     <Compile Include="Sound\Sound.cs" />
     <Compile Include="Sound\AbstractSource.cs" />
     <Compile Include="Sound\Channel.cs" />
+    <Compile Include="Game\StateMachine.cs" />
+    <Compile Include="Resources\LuaScript.cs" />
+    <Compile Include="Core.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.1.0.7\build\net40\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.1.0.7\build\net40\Baseclass.Contrib.Nuget.Output.targets')" />
+  <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.1.0.9\build\net40\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.1.0.9\build\net40\Baseclass.Contrib.Nuget.Output.targets')" />
   <ItemGroup>
     <Folder Include="Game\" />
     <Folder Include="Graphics\" />

@@ -10,11 +10,11 @@ namespace Breeze.Game
         /// </summary>
         /// <param name="type">Type of instance</param>
         /// <param name="par">Parameters to set</param>
-        public static Entity Build(Type type, BuildParams par)
+        public static Entity Create(Type type, BuildParams par)
         {
             if (!type.IsSubclassOf(typeof(Entity)))
-                throw new ReflectionException("Passed an non-entity type to the Entity.Build method");
-            Entity tmp = (Entity)Activator.CreateInstance(type);
+                throw new ReflectionException("Passed an non-entity type to the Entity.Create method");
+            var tmp = (Entity)Activator.CreateInstance(type);
             foreach (KeyValuePair<String, object> pair in par)
             {
                 ReflectionHelper.SetAnything(type, tmp, pair.Key, pair.Value);

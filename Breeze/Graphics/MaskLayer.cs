@@ -34,8 +34,8 @@ namespace Breeze.Graphics
                 return;
             }
 
-            var prevTarget = Screen.CurrentTarget;
-            Screen.CurrentTarget = Buffer;
+            var prevTarget = Screen.Target;
+            Screen.Target = Buffer;
             Buffer.Clear(Color.Transparent);
             Spr.Color = Color;
 
@@ -44,11 +44,11 @@ namespace Breeze.Graphics
 
             Buffer.Display();
 
-            Screen.CurrentTarget = prevTarget;
+            Screen.Target = prevTarget;
             NeedsRendering = false;
 
             Drawing:
-            Screen.CurrentTarget.Draw(Spr, States);
+            Screen.Target.Draw(Spr, States);
         }
     }
 }

@@ -104,6 +104,7 @@ namespace Breeze.Graphics
 			Children = new List<Drawable>();
             Transform = Transform.Identity;
             States = new RenderStates();
+            States.BlendMode = BlendMode.Alpha;
             Color = new Color(0xff, 0xff, 0xff, 0xff);
 			FScale = 1;
 			FAlpha = 0xff;

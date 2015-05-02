@@ -7,9 +7,22 @@ namespace Breeze.Sound
     {
         protected SFML.Audio.Sound Snd;
 
-        protected override float GetAttenuation()
+        public override bool Loop
         {
-            return Snd.Attenuation;
+            get { return Snd.Loop; }
+            set { Snd.Loop = value; }
+        }
+
+        public override bool RelativeToListener
+        {
+            get { return Snd.RelativeToListener; }
+            set { Snd.RelativeToListener = value; }
+        }
+
+        public override float Pitch 
+        {
+            get { return Snd.Pitch; }
+            set { Snd.Pitch = value; }
         }
 
         protected override void SetAttenuation(float value)
@@ -17,29 +30,9 @@ namespace Breeze.Sound
             Snd.Attenuation = value;
         }
 
-        protected override float GetMinDistance()
-        {
-            return Snd.MinDistance;
-        }
-
         protected override void SetMinDistance(float value)
         {
             Snd.MinDistance = value;
-        }
-
-        protected override float GetPitch()
-        {
-            return Snd.Pitch;
-        }
-
-        protected override void SetPitch(float value)
-        {
-            Snd.Pitch = value;
-        }
-
-        protected override float GetVolume()
-        {
-            return Snd.Volume;
         }
 
         protected override void SetVolume(float value)
@@ -47,44 +40,14 @@ namespace Breeze.Sound
             Snd.Volume = value;
         }
 
-        protected override float GetX()
-        {
-            return Snd.Position.X;
-        }
-
         protected override void SetX(float value)
         {
             Snd.Position = FPosition;
         }
 
-        protected override float GetY()
-        {
-            return Snd.Position.Z;
-        }
-
         protected override void SetY(float value)
         {
             Snd.Position = FPosition;
-        }
-
-        protected override bool IsLooped()
-        {
-            return Snd.Loop;
-        }
-
-        protected override void SetLoop(bool value)
-        {
-            Snd.Loop = value;
-        }
-
-        protected override bool IsRelative()
-        {
-            return Snd.RelativeToListener;
-        }
-
-        protected override void SetRelative(bool value)
-        {
-            Snd.RelativeToListener = value;
         }
 
         public Sound(SoundBuffer buffer, Channel channel = null)
