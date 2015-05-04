@@ -25,14 +25,14 @@ namespace Breeze.Graphics
 
         public override void Draw()
         {
-            if (!NeedsRendering)
-                goto Drawing;
-
             if (Bypass)
             {
                 Sources[0].Draw();
                 return;
             }
+
+            if (!NeedsRendering)
+                goto Drawing;
 
             var prevTarget = Screen.Target;
             Screen.Target = Buffer;

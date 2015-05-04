@@ -10,7 +10,7 @@ namespace LayersDemo
         static void OnInit()
         {
             ResourceManager.RootDir = String.Format("..{0}..{0}..{0}Data{0}Layers{0}", Path.DirectorySeparatorChar);
-            ResourceManager.SpritesDir = String.Format("Sprites{0}", Path.DirectorySeparatorChar);
+            ResourceManager.GraphicsDir = String.Format("Sprites{0}", Path.DirectorySeparatorChar);
             ResourceManager.FontsDir = "";
 
             Core.State = new DemoState();

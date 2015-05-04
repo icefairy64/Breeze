@@ -12,9 +12,9 @@ namespace Breeze.Resources
         public static string RootDir = "";
 
         /// <summary>
-        /// Specifies relative path for sprites; trailing slash is required
+        /// Specifies relative path for graphics; trailing slash is required
         /// </summary>
-        public static string SpritesDir = "";
+        public static string GraphicsDir = "";
 
         /// <summary>
         /// Specifies relative path for fonts; trailing slash is required
@@ -57,9 +57,9 @@ namespace Breeze.Resources
 			UnloadAll();
 		}
 		
-        public static string PathToSprites()
+        public static string PathToGraphics()
         {
-            return RootDir + SpritesDir;
+            return RootDir + GraphicsDir;
         }
 
         public static string PathToFonts()
@@ -83,8 +83,10 @@ namespace Breeze.Resources
             {
                 case "SpriteBase": 
                     goto case "SpriteSheet";
+                case "TileBase":
+                    goto case "SpriteSheet";
                 case "SpriteSheet": 
-                    return PathToSprites(); 
+                    return PathToGraphics(); 
                 case "Font":
                     return PathToFonts();
                 case "SoundBuffer":
@@ -105,11 +107,9 @@ namespace Breeze.Resources
 
                 return tmp;
             }
-            else
-            {
-                var tmp = new List<Resource>(Resources.Values);
-                return (T)tmp[tmp.FindIndex( (res) => res.Source.Equals(PathTo<T>() + filename) )];
-            }
+
+            var result = new List<Resource>(Resources.Values);
+            return (T)result[result.FindIndex((res) => res.Source == PathTo<T>() + filename)];
         }
 		
 		public static void Unload(string name)

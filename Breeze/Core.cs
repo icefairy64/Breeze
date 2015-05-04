@@ -16,13 +16,21 @@ namespace Breeze
         public uint Interval;
     }
         
-    public delegate void DrawHandler(IntPtr renderer);
+    public delegate void DrawHandler();
     public delegate void CoreEventHandler();
     public delegate void ExceptionHandler(Exception e);
 
     public interface IUpdatable
     {
         void Update(uint interval);
+    }
+
+    public class BreezeException : Exception
+    {
+        public BreezeException(string msg)
+            : base(msg)
+        {
+        }
     }
 
     public static class Core
@@ -54,9 +62,9 @@ namespace Breeze
 
         static void HandleException(Exception e)
         {
-            if (ExceptionHandler != null)
+            if (OnException != null)
             {
-                ExceptionHandler(e);
+                OnException(e);
                 return;
             }
 
@@ -148,32 +156,18 @@ namespace Breeze
 
         static uint Animate(TimerEventArgs e, IntPtr param)
         {
-            try
-            {
-                var handler = OnAnimate;
-                if (handler != null)
-                    handler(null, e);
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
+            var handler = OnAnimate;
+            if (handler != null)
+                handler(null, e);
 
             return e.Interval;
         }
 
         static uint Update(TimerEventArgs e, IntPtr param)
         {
-            try
-            {
-                var handler = OnUpdate;
-                if (handler != null)
-                    handler(null, e);
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex);
-            }
+            var handler = OnUpdate;
+            if (handler != null)
+                handler(null, e);
 
             return e.Interval;
         }       
@@ -182,6 +176,8 @@ namespace Breeze
         {
             Window.Clear();
             Screen.Draw();
+            if (OnDraw != null)
+                OnDraw();
             Window.Display();
         }
 

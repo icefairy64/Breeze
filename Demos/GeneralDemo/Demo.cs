@@ -10,7 +10,7 @@ namespace BreezeTest
 		static void OnInit()
 		{
             ResourceManager.RootDir = String.Format("..{0}..{0}..{0}Data{0}", Path.DirectorySeparatorChar);
-            ResourceManager.SpritesDir = String.Format("sprites{0}", Path.DirectorySeparatorChar);
+            ResourceManager.GraphicsDir = String.Format("sprites{0}", Path.DirectorySeparatorChar);
 
             Core.State = new TestState();
 		}

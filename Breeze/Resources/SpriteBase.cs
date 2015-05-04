@@ -12,17 +12,17 @@ namespace Breeze.Resources
         public SpriteBase(string filename) 
             : base(filename)
         {
-            XmlDocument xml = new XmlDocument();
+            var xml = new XmlDocument();
             xml.Load(filename);
-            List<SpriteSheet> tmp = new List<SpriteSheet>();
+            var tmp = new List<SpriteSheet>();
 
-            XmlElement root = xml.DocumentElement;
+            var root = xml.DocumentElement;
             if (root.HasAttribute("name"))
                 Name = root.GetAttribute("name");
 
             foreach (XmlNode child in root.ChildNodes)
             {
-                var ld = ResourceManager.Load<SpriteSheet>(((XmlElement)child).InnerText);
+                var ld = ResourceManager.Load<SpriteSheet>(child.InnerText);
                 tmp.Add(ld);
             }
 

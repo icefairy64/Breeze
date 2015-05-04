@@ -10,7 +10,7 @@ namespace Breeze.Graphics
         
         // Dimension properties
 
-        public int X
+        public virtual int X
         {
             get { return FX; }
             set 
@@ -19,7 +19,7 @@ namespace Breeze.Graphics
                 FX = value;
             }
         }
-        public int Y
+        public virtual int Y
         {
             get { return FY; }
             set 
@@ -29,13 +29,13 @@ namespace Breeze.Graphics
             }
         }
 
-        public int W
+        public virtual int W
         {
             get { return FW; }
             set { FW = value; }
         }
 
-        public int H
+        public virtual int H
         {
             get { return FH; }
             set { FH = value; }

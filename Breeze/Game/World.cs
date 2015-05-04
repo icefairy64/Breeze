@@ -53,22 +53,22 @@ namespace Breeze.Game
 
         public void ImportMap(string filename)
         {
-            XmlDocument xml = new XmlDocument();
+            var xml = new XmlDocument();
             xml.Load(filename);
 
-            XmlElement root = xml.DocumentElement;
+            var root = xml.DocumentElement;
             foreach (XmlNode ch in root.ChildNodes)
             {
-                XmlElement el = (XmlElement)ch;
+                var el = (XmlElement)ch;
                 switch (el.Name)
                 {
                     case "entity":
                         // Spawning entities
                         foreach (XmlNode anode in el.ChildNodes)
                         {
-                            BuildParams par = new BuildParams();
+                            var par = new BuildParams();
                             string type = "";
-                            foreach (XmlAttribute attr in ((XmlElement)anode).Attributes)
+                            foreach (XmlElement attr in ((XmlElement)anode).Attributes)
                             {
                                 if (attr.Name != "type")
                                     par.Add(attr.Name, attr.Value);
